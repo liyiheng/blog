@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rust on (≧▽≦)</title>
+    <link>https://liyiheng.github.io/blog/categories/rust/</link>
+    <description>Recent content in rust on (≧▽≦)</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 28 Apr 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://liyiheng.github.io/blog/categories/rust/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Actix-web中间件、handler间传递数据</title>
+      <link>https://liyiheng.github.io/blog/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/</link>
+      <pubDate>Sun, 28 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://liyiheng.github.io/blog/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/</guid>
+      <description>&lt;p&gt;背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。&lt;br&gt;
+例如: Handler中使用&lt;code&gt;Auth&lt;/code&gt;中间件从token中解出的&lt;code&gt;user_id&lt;/code&gt;。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从“unsafe”看数据结构对齐</title>
+      <link>https://liyiheng.github.io/blog/2019/02/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90/</link>
+      <pubDate>Sat, 23 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://liyiheng.github.io/blog/2019/02/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90/</guid>
+      <description>&lt;p&gt;数据结构对齐是什么？维基百科对其有如下定义：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。&lt;br&gt;
+内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。&lt;br&gt;
+一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。&lt;br&gt;
+内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。&lt;br&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

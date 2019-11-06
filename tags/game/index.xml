@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>game on (≧▽≦)</title>
+    <link>https://liyiheng.github.io/blog/tags/game/</link>
+    <description>Recent content in game on (≧▽≦)</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 29 Aug 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://liyiheng.github.io/blog/tags/game/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>golang笔记：游戏中排行榜的实现</title>
+      <link>https://liyiheng.github.io/blog/2017/08/golang%E7%AC%94%E8%AE%B0%E6%B8%B8%E6%88%8F%E4%B8%AD%E6%8E%92%E8%A1%8C%E6%A6%9C%E7%9A%84%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Tue, 29 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://liyiheng.github.io/blog/2017/08/golang%E7%AC%94%E8%AE%B0%E6%B8%B8%E6%88%8F%E4%B8%AD%E6%8E%92%E8%A1%8C%E6%A6%9C%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
+      <description>&lt;p&gt;游戏开发中排行榜经常出现,接触过的排行榜有两种。一种是由玩家挑战排名比自己靠前的其他玩家，胜利后交换位置；另一种是根据玩家的某特性对所有玩家进行排序。第一种只涉及到两个玩家数据的变化，实现起来比较简单，因此只记录第二种情况。&lt;br&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

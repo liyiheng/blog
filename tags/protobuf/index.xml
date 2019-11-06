@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>protobuf on (≧▽≦)</title>
+    <link>https://liyiheng.github.io/blog/tags/protobuf/</link>
+    <description>Recent content in protobuf on (≧▽≦)</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 28 Mar 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://liyiheng.github.io/blog/tags/protobuf/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hello protobuf !</title>
+      <link>https://liyiheng.github.io/blog/2017/03/hello-protobuf/</link>
+      <pubDate>Tue, 28 Mar 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://liyiheng.github.io/blog/2017/03/hello-protobuf/</guid>
+      <description>&lt;p&gt;protobuf，独立于语言和平台的二进制数据传输格式。项目地址 &lt;a href=&#34;https://github.com/google/protobuf&#34;&gt;https://github.com/google/protobuf&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

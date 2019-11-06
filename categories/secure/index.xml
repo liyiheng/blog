@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Secure on (≧▽≦)</title>
+    <link>https://liyiheng.github.io/blog/categories/secure/</link>
+    <description>Recent content in Secure on (≧▽≦)</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 15 Oct 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://liyiheng.github.io/blog/categories/secure/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>记一次被黑</title>
+      <link>https://liyiheng.github.io/blog/2018/10/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%A2%AB%E9%BB%91/</link>
+      <pubDate>Mon, 15 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://liyiheng.github.io/blog/2018/10/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%A2%AB%E9%BB%91/</guid>
+      <description>&lt;p&gt;服务器被用来挖门罗币了。。。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

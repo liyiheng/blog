@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Volley学习笔记 - (≧▽≦)</title>
+  <meta property="og:title" content="Volley学习笔记" />
+  <meta name="twitter:title" content="Volley学习笔记" />
+  <meta name="description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
+
+主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
+  <meta property="og:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
+
+主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
+  <meta name="twitter:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
+
+主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
+  <meta name="author" content="liyiheng"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "(≧▽≦)",
+    
+    "url": "https:\/\/liyiheng.github.io\/blog\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/liyiheng.github.io\/blog\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/liyiheng.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/liyiheng.github.io\/blog\/2017\/03\/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0\/",
+          "name": "Volley学习笔记"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "liyiheng"
+  },
+  "headline": "Volley学习笔记",
+  "description" : "虽然更倾向于retrofit \x2b okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧\n主要是分析Volley的部分实现，不再涉及具体使用和二次封装\n",
+  "inLanguage" : "zh-cn",
+  "wordCount":  599 ,
+  "datePublished" : "2017-03-01T00:00:00",
+  "dateModified" : "2017-03-01T00:00:00",
+  "image" : "https:\/\/liyiheng.github.io\/blog\/",
+  "keywords" : [ "Android, Volley" ],
+  "mainEntityOfPage" : "https:\/\/liyiheng.github.io\/blog\/2017\/03\/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/liyiheng.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/liyiheng.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Volley学习笔记" />
+<meta property="og:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
+
+主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
+<meta property="og:url" content="https://liyiheng.github.io/2017/03/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="(≧▽≦)" />
+  <meta name="twitter:title" content="Volley学习笔记" />
+  <meta name="twitter:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
+
+主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://liyiheng.github.io/2017/03/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="(≧▽≦)" />
+
+  <meta name="generator" content="Hugo 0.59.1" />
+  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/syntax.css" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://liyiheng.github.io/blog/">(≧▽≦)</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="https://liyiheng.github.io/blog/">主页</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Categories" href="https://liyiheng.github.io/blog/categories">Categories</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="https://liyiheng.github.io/blog/tags">Tags</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="https://liyiheng.github.io/blog/#about">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Volley学习笔记</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 March 1, 2017
+  
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>虽然更倾向于retrofit + okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒<a href="https://github.com/google/volley">Volley的源码</a>吧</p>
+
+<p>主要是分析Volley的部分实现，不再涉及<a href="https://github.com/liyiheng/EasyVolley">具体使用和二次封装</a></p>
+
+<h3 id="volley-java">Volley.java</h3>
+
+<p><code>Volley.java</code>用来创建 <code>RequestQueue</code>，有两个用来重载静态方法和一个常量（默认的磁盘缓存目录），核心代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">public static RequestQueue newRequestQueue</span><span class="p">(</span><span class="err">Context context</span><span class="p">,</span> <span class="err">HttpStack stack</span><span class="p">)</span> <span class="p">{</span>
+    <span class="err">File cacheDir </span><span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">getCacheDir</span><span class="p">(),</span> <span class="n">DEFAULT_CACHE_DIR</span><span class="p">);</span>
+    <span class="err">String userAgent </span><span class="o">=</span> <span class="s">&#34;volley/0&#34;</span><span class="p">;</span>
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="err">String packageName </span><span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getPackageName</span><span class="p">();</span>
+        <span class="err">PackageInfo info </span><span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getPackageManager</span><span class="p">().</span><span class="na">getPackageInfo</span><span class="p">(</span><span class="n">packageName</span><span class="p">,</span> <span class="n">0</span><span class="p">);</span>
+        <span class="n">userAgent</span> <span class="o">=</span> <span class="n">packageName</span> <span class="o">+</span> <span class="s">&#34;/&#34;</span> <span class="o">+</span> <span class="n">info</span><span class="p">.</span><span class="na">versionCode</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="err">NameNotFoundException ignored</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">stack</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION</span><span class="p">.</span><span class="na">SDK_INT</span> <span class="o">&gt;=</span> <span class="n">9</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">stack</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HurlStack</span><span class="p">();</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">stack</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpClientStack</span><span class="p">(</span><span class="n">AndroidHttpClient</span><span class="p">.</span><span class="na">newInstance</span><span class="p">(</span><span class="n">userAgent</span><span class="p">));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="err">Network network </span><span class="o">=</span> <span class="k">new</span> <span class="n">BasicNetwork</span><span class="p">(</span><span class="n">stack</span><span class="p">);</span>
+    <span class="err">RequestQueue queue </span><span class="o">=</span> <span class="k">new</span> <span class="n">RequestQueue</span><span class="p">(</span><span class="k">new</span> <span class="n">DiskBasedCache</span><span class="p">(</span><span class="n">cacheDir</span><span class="p">),</span> <span class="n">network</span><span class="p">);</span>
+    <span class="n">queue</span><span class="p">.</span><span class="na">start</span><span class="p">();</span>
+    <span class="k">return</span> <span class="n">queue</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+<ul>
+<li>1.创建缓存目录</li>
+<li>2.生成内容为<code>包名/版本号</code>的UA，默认为&rdquo;volley/0&rdquo;</li>
+<li>3.如果未指定stack，在api9以上的设备上使用基于HttpURLConnection的stack，更旧是设备上则是用HttpClient实现的stack。传入的HttpStack为<code>接口类型</code>，因此可以使用自己的HttpStack实现（如okhttp）。</li>
+<li>4.创建BasicNetwork对象和DiskBasedCache对象</li>
+<li>5.通过4中的对象构造一个RequestQueue，并调用start()方法后将其返回</li>
+</ul>
+
+<h3 id="requestqueue-java">RequestQueue.java</h3>
+
+<p>RequestQueue有一个缓存dispatcher和一组网络dispatcher，其数量（线程池大小）可指定，默认为4.</p>
+
+<p>stop()方法将所有dispatcher停止<br></p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">public void </span><span class="n">stop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mCacheDispatcher</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mCacheDispatcher</span><span class="p">.</span><span class="na">quit</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="err">int i </span><span class="o">=</span> <span class="n">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">mDispatchers</span><span class="p">.</span><span class="na">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mDispatchers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">mDispatchers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="na">quit</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+<p>start()方法则是先调用stop方法，再创建每一个dispatcher并调用其start方法（dispatcher继承Thread）</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">public void </span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">stop</span><span class="p">();</span>  <span class="c1">// Make sure any currently running dispatchers are stopped.
+</span><span class="c1"></span>    <span class="c1">// Create the cache dispatcher and start it.
+</span><span class="c1"></span>    <span class="n">mCacheDispatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CacheDispatcher</span><span class="p">(</span><span class="n">mCacheQueue</span><span class="p">,</span> <span class="n">mNetworkQueue</span><span class="p">,</span> <span class="n">mCache</span><span class="p">,</span> <span class="n">mDelivery</span><span class="p">);</span>
+    <span class="n">mCacheDispatcher</span><span class="p">.</span><span class="na">start</span><span class="p">();</span>
+    <span class="k">for</span> <span class="p">(</span><span class="err">int i </span><span class="o">=</span> <span class="n">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">mDispatchers</span><span class="p">.</span><span class="na">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="err">NetworkDispatcher networkDispatcher </span><span class="o">=</span> <span class="k">new</span> <span class="n">NetworkDispatcher</span><span class="p">(</span><span class="n">mNetworkQueue</span><span class="p">,</span> <span class="n">mNetwork</span><span class="p">,</span>
+                <span class="n">mCache</span><span class="p">,</span> <span class="n">mDelivery</span><span class="p">);</span>
+        <span class="n">mDispatchers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">networkDispatcher</span><span class="p">;</span>
+        <span class="n">networkDispatcher</span><span class="p">.</span><span class="na">start</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+<p>add()方法将请求添加至队列。
+ 如果不使用缓存，则直接添加至网络队列并返回，不再使用缓存队列；
+ 使用缓存时，则先根据cacheKey判断是否有正在等待的相同请求，如果有就加入该key对应的Queue排队，没有则添加到缓存队列并将key对应的Queue置空</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="o">&lt;</span><span class="err">T&gt; Request</span><span class="o">&lt;</span><span class="err">T&gt; add</span><span class="p">(</span><span class="err">Request&lt;T&gt; request</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 将该请求标记为属于当前队列，并加入mCurrentRequests
+</span><span class="c1"></span>    <span class="n">request</span><span class="p">.</span><span class="na">setRequestQueue</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="kd">synchronized</span> <span class="p">(</span><span class="n">mCurrentRequests</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">mCurrentRequests</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// Process requests in the order they are added.
+</span><span class="c1"></span>    <span class="n">request</span><span class="p">.</span><span class="na">setSequence</span><span class="p">(</span><span class="n">getSequenceNumber</span><span class="p">());</span>
+    <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;add-to-queue&#34;</span><span class="p">);</span>
+    <span class="c1">// If the request is uncacheable, skip the cache queue and go straight to the network.
+</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">request</span><span class="p">.</span><span class="na">shouldCache</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">mNetworkQueue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">request</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// Insert request into stage if there&#39;s already a request with the same cache key in flight.
+</span><span class="c1"></span>    <span class="kd">synchronized</span> <span class="p">(</span><span class="n">mWaitingRequests</span><span class="p">)</span> <span class="p">{</span>
+        <span class="err">String cacheKey </span><span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="na">getCacheKey</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mWaitingRequests</span><span class="p">.</span><span class="na">containsKey</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">))</span> <span class="p">{</span>
+            <span class="c1">// There is already a request in flight. Queue up.
+</span><span class="c1"></span>            <span class="n">Queue</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">stagedRequests</span> <span class="o">=</span> <span class="n">mWaitingRequests</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">stagedRequests</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">stagedRequests</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&lt;?&gt;&gt;</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="n">stagedRequests</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+            <span class="n">mWaitingRequests</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">,</span> <span class="n">stagedRequests</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">VolleyLog</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">VolleyLog</span><span class="p">.</span><span class="na">v</span><span class="p">(</span><span class="s">&#34;Request for cacheKey=%s is in flight, putting on hold.&#34;</span><span class="p">,</span> <span class="n">cacheKey</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="c1">// Insert &#39;null&#39; queue for this cacheKey, indicating there is now a request in
+</span><span class="c1"></span>            <span class="c1">// flight.
+</span><span class="c1"></span>            <span class="n">mWaitingRequests</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+            <span class="n">mCacheQueue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">request</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+<h3 id="dispatcher">Dispatcher</h3>
+
+<p>请求添加到队列后，由Dispatcher处理。NetworkDispatcher和CacheDispatcher都是Thread的子类，主要逻辑在run()方法</p>
+
+<ul>
+<li><p>NetworkDispatcher.java核心代码如下</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// Take a request from the queue.
+</span><span class="c1"></span>                <span class="c1">// 此处mQueue的类型为BlockingQueue&lt;Request&lt;?&gt;&gt;，
+</span><span class="c1"></span>                <span class="c1">// take()方法有可能阻塞，类似与Linux下的pipe，
+</span><span class="c1"></span>                <span class="c1">// Looper.loop()方法中也有同样的用法(生产者消费者模型)
+</span><span class="c1"></span>                <span class="n">request</span> <span class="o">=</span> <span class="n">mQueue</span><span class="p">.</span><span class="na">take</span><span class="p">();</span>
+                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// Perform the network request.
+</span><span class="c1"></span>                <span class="err">NetworkResponse networkResponse </span><span class="o">=</span> <span class="n">mNetwork</span><span class="p">.</span><span class="na">performRequest</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// Parse the response here on the worker thread.
+</span><span class="c1"></span>                <span class="n">Response</span><span class="o">&lt;?&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="na">parseNetworkResponse</span><span class="p">(</span><span class="n">networkResponse</span><span class="p">);</span>
+                <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;network-parse-complete&#34;</span><span class="p">);</span>
+                <span class="c1">// Write to cache if applicable.
+</span><span class="c1"></span>                <span class="c1">// TODO: Only update cache metadata instead of entire record for 304s.
+</span><span class="c1"></span>                <span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">shouldCache</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">response</span><span class="p">.</span><span class="na">cacheEntry</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">mCache</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getCacheKey</span><span class="p">(),</span> <span class="n">response</span><span class="p">.</span><span class="na">cacheEntry</span><span class="p">);</span>
+                    <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;network-cache-written&#34;</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="c1">// Post the response back.
+</span><span class="c1"></span>                <span class="n">request</span><span class="p">.</span><span class="na">markDelivered</span><span class="p">();</span>
+                <span class="c1">// mDelivery通过executor和handler将结果发出，由Looper线程处理，通常是主线程
+</span><span class="c1"></span>                <span class="n">mDelivery</span><span class="p">.</span><span class="na">postResponse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span></code></pre></div></li>
+
+<li><p>CacheDispatcher.java核心代码如下
+与NetworkDispatcher的实现类似，但CacheDispatcher需要对缓存数据进行判断，是否存在、是否过期、是否需要刷新等。根据判断结果决定是否需要将请求加入网络队列交给NetworkDispatcher处理</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">            <span class="c1">// Get a request from the cache triage queue, blocking until
+</span><span class="c1"></span>            <span class="c1">// at least one is available.
+</span><span class="c1"></span>            <span class="err">final Request</span><span class="o">&lt;?&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">mCacheQueue</span><span class="p">.</span><span class="na">take</span><span class="p">();</span>
+            <span class="c1">// ...
+</span><span class="c1"></span>            <span class="c1">// ...
+</span><span class="c1"></span>            <span class="c1">// Attempt to retrieve this item from cache.
+</span><span class="c1"></span>            <span class="err">Cache.Entry entry </span><span class="o">=</span> <span class="n">mCache</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getCacheKey</span><span class="p">());</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;cache-miss&#34;</span><span class="p">);</span>
+                <span class="c1">// Cache miss; send off to the network dispatcher.
+</span><span class="c1"></span>                <span class="n">mNetworkQueue</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="c1">// If it is completely expired, just send it to the network.
+</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="na">isExpired</span><span class="p">())</span> <span class="p">{</span>
+                <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;cache-hit-expired&#34;</span><span class="p">);</span>
+                <span class="n">request</span><span class="p">.</span><span class="na">setCacheEntry</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
+                <span class="n">mNetworkQueue</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="c1">// We have a cache hit; parse its data for delivery back to the request.
+</span><span class="c1"></span>            <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;cache-hit&#34;</span><span class="p">);</span>
+            <span class="n">Response</span><span class="o">&lt;?&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="na">parseNetworkResponse</span><span class="p">(</span>
+                    <span class="k">new</span> <span class="n">NetworkResponse</span><span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="na">data</span><span class="p">,</span> <span class="n">entry</span><span class="p">.</span><span class="na">responseHeaders</span><span class="p">));</span>
+            <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;cache-hit-parsed&#34;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">entry</span><span class="p">.</span><span class="na">refreshNeeded</span><span class="p">())</span> <span class="p">{</span>
+                <span class="c1">// Completely unexpired cache hit. Just deliver the response.
+</span><span class="c1"></span>                <span class="n">mDelivery</span><span class="p">.</span><span class="na">postResponse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="c1">// Soft-expired cache hit. We can deliver the cached response,
+</span><span class="c1"></span>                <span class="c1">// but we need to also send the request to the network for
+</span><span class="c1"></span>                <span class="c1">// refreshing.
+</span><span class="c1"></span>                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="n">mDelivery</span><span class="p">.</span><span class="na">postResponse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="k">new</span> <span class="n">Runnable</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="nd">@Override</span>
+                    <span class="err">public void </span><span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+                        <span class="k">try</span> <span class="p">{</span>
+                            <span class="n">mNetworkQueue</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
+                        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="err">InterruptedException e</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="c1">// Not much we can do about this.
+</span><span class="c1"></span>                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">});</span>
+            <span class="p">}</span></code></pre></div>
+<h3 id="嗯-还没写完">嗯，还没写完</h3></li>
+</ul>
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://liyiheng.github.io/blog//tags/android/">Android</a>&nbsp;
+            
+              <a href="https://liyiheng.github.io/blog//tags/volley/">Volley</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://liyiheng.github.io/blog/2017/01/about/" data-toggle="tooltip" data-placement="top" title="about">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://liyiheng.github.io/blog/2017/03/java%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" data-toggle="tooltip" data-placement="top" title="Java学习笔记--单例模式">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              liyiheng
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://liyiheng.github.io/blog/">(≧▽≦)</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>git on (≧▽≦)</title>
+    <link>https://liyiheng.github.io/blog/tags/git/</link>
+    <description>Recent content in git on (≧▽≦)</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 10 Aug 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://liyiheng.github.io/blog/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>git笔记(reflog)</title>
+      <link>https://liyiheng.github.io/blog/2017/08/git%E7%AC%94%E8%AE%B0reflog/</link>
+      <pubDate>Thu, 10 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://liyiheng.github.io/blog/2017/08/git%E7%AC%94%E8%AE%B0reflog/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;不熟悉git，差点翻车&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

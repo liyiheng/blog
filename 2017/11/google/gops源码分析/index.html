@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>google/gops源码分析 - (≧▽≦)</title>
+  <meta property="og:title" content="google/gops源码分析" />
+  <meta name="twitter:title" content="google/gops源码分析" />
+  <meta name="description" content="发现了一个很实用的工具：gops
+
+
+gops is a command to list and diagnose Go processes currently running on your system.
+
+
+觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。">
+  <meta property="og:description" content="发现了一个很实用的工具：gops
+
+
+gops is a command to list and diagnose Go processes currently running on your system.
+
+
+觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。">
+  <meta name="twitter:description" content="发现了一个很实用的工具：gops
+
+
+gops is a command to list and diagnose Go processes currently running on your system.
+
+
+觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。">
+  <meta name="author" content="liyiheng"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "(≧▽≦)",
+    
+    "url": "https:\/\/liyiheng.github.io\/blog\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/liyiheng.github.io\/blog\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/liyiheng.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/liyiheng.github.io\/blog\/2017\/11\/google\/gops%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90\/",
+          "name": "Google\/gops源码分析"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "liyiheng"
+  },
+  "headline": "google\/gops源码分析",
+  "description" : "发现了一个很实用的工具：gops\n gops is a command to list and diagnose Go processes currently running on your system.\n 觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。\n",
+  "inLanguage" : "zh-cn",
+  "wordCount":  1432 ,
+  "datePublished" : "2017-11-13T00:00:00",
+  "dateModified" : "2017-11-13T00:00:00",
+  "image" : "https:\/\/liyiheng.github.io\/blog\/",
+  "keywords" : [ "golang" ],
+  "mainEntityOfPage" : "https:\/\/liyiheng.github.io\/blog\/2017\/11\/google\/gops%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/liyiheng.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/liyiheng.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="google/gops源码分析" />
+<meta property="og:description" content="发现了一个很实用的工具：gops
+
+
+gops is a command to list and diagnose Go processes currently running on your system.
+
+
+觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。">
+<meta property="og:url" content="https://liyiheng.github.io/2017/11/google/gops%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="(≧▽≦)" />
+  <meta name="twitter:title" content="google/gops源码分析" />
+  <meta name="twitter:description" content="发现了一个很实用的工具：gops
+
+
+gops is a command to list and diagnose Go processes currently running on your system.
+
+
+觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://liyiheng.github.io/2017/11/google/gops%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="(≧▽≦)" />
+
+  <meta name="generator" content="Hugo 0.59.1" />
+  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/syntax.css" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://liyiheng.github.io/blog/">(≧▽≦)</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="https://liyiheng.github.io/blog/">主页</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Categories" href="https://liyiheng.github.io/blog/categories">Categories</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="https://liyiheng.github.io/blog/tags">Tags</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="https://liyiheng.github.io/blog/#about">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>google/gops源码分析</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 November 13, 2017
+  
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>发现了一个很实用的工具：gops<br></p>
+
+<blockquote>
+<p>gops is a command to list and diagnose Go processes currently running on your system.</p>
+</blockquote>
+
+<p>觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。<br></p>
+
+<h3 id="0x0000">0x0000</h3>
+
+<p>先看看效果</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ go get -u github.com/google/gops
+$ gops
+<span class="m">14047</span> <span class="m">14020</span> gops               go1.8.4 /home/liyiheng/projects/bin/gops
+<span class="m">7596</span>  <span class="m">3852</span>  shadowsocks-local  go1.8.1 /home/liyiheng/projects/bin/shadowsocks-local</code></pre></div>
+<h3 id="0x0001">0x0001</h3>
+
+<p>大致结构如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ tree
+.
+├── agent
+│   ├── agent.go
+│   └── agent_test.go
+├── cmd.go
+├── examples
+│   └── hello
+│       └── main.go
+├── Gopkg.lock
+├── Gopkg.toml
+├── goprocess
+│   └── gp.go
+├── internal
+│   └── internal.go
+├── LICENSE
+├── main.go
+├── main_test.go
+├── README.md
+├── signal
+│   └── signal.go
+└── vendor ...</code></pre></div>
+<p>主要是为了看看如何判断一个进程是否是golang程序，暂时忽略诊断相关的代码。<br></p>
+
+<h3 id="0x0002">0x0002</h3>
+
+<p>顺着<code>main()</code>函数找到了<code>processes()</code>函数，继而找到<code>goprocess.FindAll()</code>函数：</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// FindAll returns all the Go processes currently running on this host.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">FindAll</span><span class="p">()</span> <span class="p">[]</span><span class="nx">P</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">results</span> <span class="p">[]</span><span class="nx">P</span>
+
+	<span class="nx">pss</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ps</span><span class="p">.</span><span class="nf">Processes</span><span class="p">()</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">results</span>
+	<span class="p">}</span>
+
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">pss</span><span class="p">))</span>
+
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">pr</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">pss</span> <span class="p">{</span>
+		<span class="nx">pr</span> <span class="o">:=</span> <span class="nx">pr</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="k">defer</span> <span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+
+			<span class="nx">path</span><span class="p">,</span> <span class="nx">version</span><span class="p">,</span> <span class="nx">agent</span><span class="p">,</span> <span class="nx">ok</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">isGo</span><span class="p">(</span><span class="nx">pr</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="c1">// TODO(jbd): Return a list of errors.
+</span><span class="c1"></span>			<span class="p">}</span>
+			<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+				<span class="k">return</span>
+			<span class="p">}</span>
+			<span class="nx">results</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="nx">P</span><span class="p">{</span>
+				<span class="nx">PID</span><span class="p">:</span>          <span class="nx">pr</span><span class="p">.</span><span class="nf">Pid</span><span class="p">(),</span>
+				<span class="nx">PPID</span><span class="p">:</span>         <span class="nx">pr</span><span class="p">.</span><span class="nf">PPid</span><span class="p">(),</span>
+				<span class="nx">Exec</span><span class="p">:</span>         <span class="nx">pr</span><span class="p">.</span><span class="nf">Executable</span><span class="p">(),</span>
+				<span class="nx">Path</span><span class="p">:</span>         <span class="nx">path</span><span class="p">,</span>
+				<span class="nx">BuildVersion</span><span class="p">:</span> <span class="nx">version</span><span class="p">,</span>
+				<span class="nx">Agent</span><span class="p">:</span>        <span class="nx">agent</span><span class="p">,</span>
+			<span class="p">})</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="k">return</span> <span class="nx">results</span>
+<span class="p">}</span></code></pre></div>
+<p>在这个函数中看到了想看的东西：</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">pss</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ps</span><span class="p">.</span><span class="nf">Progresses</span><span class="p">()</span>
+<span class="c1">// .... 
+</span><span class="c1"></span><span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">pr</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">pss</span> <span class="p">{</span>
+	<span class="nx">pr</span> <span class="o">:=</span> <span class="nx">pr</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">(){</span>
+		 <span class="c1">// ...
+</span><span class="c1"></span>		 <span class="nx">path</span><span class="p">,</span> <span class="nx">version</span><span class="p">,</span> <span class="nx">agent</span><span class="p">,</span> <span class="nx">ok</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">isGo</span><span class="p">(</span><span class="nx">pr</span><span class="p">)</span>
+		 <span class="c1">// ...
+</span><span class="c1"></span>	<span class="p">}()</span>
+<span class="p">}</span></code></pre></div>
+<p><code>Progresses()</code>获取所有进程信息，<code>isGo()</code>判断是否是golang程序。<br>
+此外，还有意外收获:<code>pr := pr</code>, 这很巧妙,比<code>go func(a A){}(a)</code>优雅。<br></p>
+
+<h3 id="0x0003">0x0003</h3>
+
+<p><code>Progresses()</code>中是<code>progresses()函数</code>，不同系统下的<code>progresses</code>有不同的实现，这里只看Linux的。<br></p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">processes</span><span class="p">()</span> <span class="p">([]</span><span class="nx">Process</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">d</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="s">&#34;/proc&#34;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="k">defer</span> <span class="nx">d</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+
+	<span class="nx">results</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="nx">Process</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nx">fis</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">d</span><span class="p">.</span><span class="nf">Readdir</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+		<span class="p">}</span>
+
+		<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">fi</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">fis</span> <span class="p">{</span>
+			<span class="c1">// We only care about directories, since all pids are dirs
+</span><span class="c1"></span>			<span class="k">if</span> <span class="p">!</span><span class="nx">fi</span><span class="p">.</span><span class="nf">IsDir</span><span class="p">()</span> <span class="p">{</span>
+				<span class="k">continue</span>
+			<span class="p">}</span>
+
+			<span class="c1">// We only care if the name starts with a numeric
+</span><span class="c1"></span>			<span class="nx">name</span> <span class="o">:=</span> <span class="nx">fi</span><span class="p">.</span><span class="nf">Name</span><span class="p">()</span>
+			<span class="k">if</span> <span class="nx">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">&lt;</span> <span class="sc">&#39;0&#39;</span> <span class="o">||</span> <span class="nx">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">&gt;</span> <span class="sc">&#39;9&#39;</span> <span class="p">{</span>
+				<span class="k">continue</span>
+			<span class="p">}</span>
+
+			<span class="c1">// From this point forward, any errors we just ignore, because
+</span><span class="c1"></span>			<span class="c1">// it might simply be that the process doesn&#39;t exist anymore.
+</span><span class="c1"></span>			<span class="nx">pid</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">ParseInt</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="k">continue</span>
+			<span class="p">}</span>
+
+			<span class="nx">p</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">newUnixProcess</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nx">pid</span><span class="p">))</span>
+			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="k">continue</span>
+			<span class="p">}</span>
+
+			<span class="nx">results</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="nx">p</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="nx">results</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span></code></pre></div>
+<p>遍历/proc下的文件获取所有进程pid，再根据pid对应目录下的文件创建含有对应进程信息的结构体</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// Refresh reloads all the data associated with this process.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">UnixProcess</span><span class="p">)</span> <span class="nf">Refresh</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">statPath</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;/proc/%d/stat&#34;</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">pid</span><span class="p">)</span>
+	<span class="nx">dataBytes</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">ioutil</span><span class="p">.</span><span class="nf">ReadFile</span><span class="p">(</span><span class="nx">statPath</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+
+	<span class="c1">// First, parse out the image name
+</span><span class="c1"></span>	<span class="nx">data</span> <span class="o">:=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">dataBytes</span><span class="p">)</span>
+	<span class="nx">binStart</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">IndexRune</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="sc">&#39;(&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+	<span class="nx">binEnd</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">IndexRune</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">binStart</span><span class="p">:],</span> <span class="sc">&#39;)&#39;</span><span class="p">)</span>
+	<span class="nx">p</span><span class="p">.</span><span class="nx">binary</span> <span class="p">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">binStart</span> <span class="p">:</span> <span class="nx">binStart</span><span class="o">+</span><span class="nx">binEnd</span><span class="p">]</span>
+
+	<span class="c1">// Move past the image name and start parsing the rest
+</span><span class="c1"></span>	<span class="c1">// The name here might not be the full name
+</span><span class="c1"></span>	<span class="nx">data</span> <span class="p">=</span> <span class="nx">data</span><span class="p">[</span><span class="nx">binStart</span><span class="o">+</span><span class="nx">binEnd</span><span class="o">+</span><span class="mi">2</span><span class="p">:]</span>
+	<span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sscanf</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span>
+		<span class="s">&#34;%c %d %d %d&#34;</span><span class="p">,</span>
+		<span class="o">&amp;</span><span class="nx">p</span><span class="p">.</span><span class="nx">state</span><span class="p">,</span>
+		<span class="o">&amp;</span><span class="nx">p</span><span class="p">.</span><span class="nx">ppid</span><span class="p">,</span>
+		<span class="o">&amp;</span><span class="nx">p</span><span class="p">.</span><span class="nx">pgrp</span><span class="p">,</span>
+		<span class="o">&amp;</span><span class="nx">p</span><span class="p">.</span><span class="nx">sid</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></div>
+<h3 id="0x0004">0x0004</h3>
+
+<p>重点来了</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// isGo looks up the runtime.buildVersion symbol
+</span><span class="c1">// in the process&#39; binary and determines if the process
+</span><span class="c1">// if a Go process or not. If the process is a Go process,
+</span><span class="c1">// it reports PID, binary name and full path of the binary.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">isGo</span><span class="p">(</span><span class="nx">pr</span> <span class="nx">ps</span><span class="p">.</span><span class="nx">Process</span><span class="p">)</span> <span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">version</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">agent</span><span class="p">,</span> <span class="nx">ok</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">pr</span><span class="p">.</span><span class="nf">Pid</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="c1">// ignore system process
+</span><span class="c1"></span>		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">path</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">pr</span><span class="p">.</span><span class="nf">Path</span><span class="p">()</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="kd">var</span> <span class="nx">versionInfo</span> <span class="nx">goversion</span><span class="p">.</span><span class="nx">Version</span>
+	<span class="nx">versionInfo</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">goversion</span><span class="p">.</span><span class="nf">ReadExe</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">ok</span> <span class="p">=</span> <span class="kc">true</span>
+	<span class="nx">version</span> <span class="p">=</span> <span class="nx">versionInfo</span><span class="p">.</span><span class="nx">Release</span>
+	<span class="nx">pidfile</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">internal</span><span class="p">.</span><span class="nf">PIDFile</span><span class="p">(</span><span class="nx">pr</span><span class="p">.</span><span class="nf">Pid</span><span class="p">())</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Stat</span><span class="p">(</span><span class="nx">pidfile</span><span class="p">)</span>
+		<span class="nx">agent</span> <span class="p">=</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">version</span><span class="p">,</span> <span class="nx">agent</span><span class="p">,</span> <span class="nx">ok</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span></code></pre></div>
+<p>显然，核心是<code>goversion.ReadExe(path)</code>，跳进去，</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// ReadExe reports information about the Go version used to build
+</span><span class="c1">// the program executable named by file.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ReadExe</span><span class="p">(</span><span class="nx">file</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">Version</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">v</span> <span class="nx">Version</span>
+	<span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">openExe</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="k">defer</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+	<span class="nx">isGo</span> <span class="o">:=</span> <span class="kc">false</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">name</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">f</span><span class="p">.</span><span class="nf">SectionNames</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">name</span> <span class="o">==</span> <span class="s">&#34;.note.go.buildid&#34;</span> <span class="p">{</span>
+			<span class="nx">isGo</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">syms</span><span class="p">,</span> <span class="nx">symsErr</span> <span class="o">:=</span> <span class="nx">f</span><span class="p">.</span><span class="nf">Symbols</span><span class="p">()</span>
+	<span class="nx">isGccgo</span> <span class="o">:=</span> <span class="kc">false</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">sym</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">syms</span> <span class="p">{</span>
+		<span class="nx">name</span> <span class="o">:=</span> <span class="nx">sym</span><span class="p">.</span><span class="nx">Name</span>
+		<span class="k">if</span> <span class="nx">name</span> <span class="o">==</span> <span class="s">&#34;runtime.main&#34;</span> <span class="o">||</span> <span class="nx">name</span> <span class="o">==</span> <span class="s">&#34;main.main&#34;</span> <span class="p">{</span>
+			<span class="nx">isGo</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;runtime.&#34;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasSuffix</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;$descriptor&#34;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">isGccgo</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">name</span> <span class="o">==</span> <span class="s">&#34;runtime.buildVersion&#34;</span> <span class="p">{</span>
+			<span class="nx">isGo</span> <span class="p">=</span> <span class="kc">true</span>
+			<span class="nx">release</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">readBuildVersion</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">sym</span><span class="p">.</span><span class="nx">Addr</span><span class="p">,</span> <span class="nx">sym</span><span class="p">.</span><span class="nx">Size</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">err</span>
+			<span class="p">}</span>
+			<span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="p">=</span> <span class="nx">release</span>
+
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;_Cfunc__goboringcrypto_&#34;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">v</span><span class="p">.</span><span class="nx">BoringCrypto</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="p">}</span>
+		<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">s</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">standardCryptoNames</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">v</span><span class="p">.</span><span class="nx">StandardCrypto</span> <span class="p">=</span> <span class="kc">true</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="o">*</span><span class="nx">debugMatch</span> <span class="p">{</span>
+		<span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+		<span class="nx">g</span><span class="p">,</span> <span class="nx">release</span> <span class="o">:=</span> <span class="nf">readBuildVersionX86Asm</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">g</span> <span class="p">{</span>
+			<span class="nx">isGo</span> <span class="p">=</span> <span class="kc">true</span>
+			<span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="p">=</span> <span class="nx">release</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">isGccgo</span> <span class="o">&amp;&amp;</span> <span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+		<span class="nx">isGo</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="p">=</span> <span class="s">&#34;gccgo (version unknown)&#34;</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">isGo</span> <span class="o">&amp;&amp;</span> <span class="nx">symsErr</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">symsErr</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">!</span><span class="nx">isGo</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;not a Go executable&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+		<span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="p">=</span> <span class="s">&#34;unknown Go version&#34;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">v</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span></code></pre></div>
+<p>整个函数都是围绕着<code>f, err := openExe(file)</code>中的<code>f</code>，先看看<code>openExe</code>函数。<br>
+<code>func openExe(file string) (exe,error) {}</code><br>
+可见， <code>f</code>的类型是<code>exe</code>。</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">type</span> <span class="nx">exe</span> <span class="kd">interface</span> <span class="p">{</span>
+	<span class="nf">AddrSize</span><span class="p">()</span> <span class="kt">int</span> <span class="c1">// bytes
+</span><span class="c1"></span>	<span class="nf">ReadData</span><span class="p">(</span><span class="nx">addr</span><span class="p">,</span> <span class="nx">size</span> <span class="kt">uint64</span><span class="p">)</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+	<span class="nf">Symbols</span><span class="p">()</span> <span class="p">([]</span><span class="nx">sym</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+	<span class="nf">SectionNames</span><span class="p">()</span> <span class="p">[]</span><span class="kt">string</span>
+	<span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span>
+	<span class="nf">ByteOrder</span><span class="p">()</span> <span class="nx">binary</span><span class="p">.</span><span class="nx">ByteOrder</span>
+	<span class="nf">Entry</span><span class="p">()</span> <span class="kt">uint64</span>
+<span class="p">}</span></code></pre></div>
+<p>再看<code>openExe</code>的函数体：</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// 打开传入的文件目录对应的文件
+</span><span class="c1"></span><span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span>
+<span class="c1">// 读取前16个字节
+</span><span class="c1"></span><span class="nx">data</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">io</span><span class="p">.</span><span class="nf">ReadFull</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span>
+<span class="c1">// 将文件指针移回开头(细节见APUE，APUE是本神书，强烈安利)
+</span><span class="c1"></span><span class="nx">f</span><span class="p">.</span><span class="nf">Seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="c1">// 判断是否是ELF文件
+</span><span class="c1">// Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00
+</span><span class="c1">// ELF文件的魔数第一个字节是7F，接下来三个分别是ELF
+</span><span class="c1"></span><span class="k">if</span> <span class="nx">bytes</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;\x7FELF&#34;</span><span class="p">))</span> <span class="p">{</span>
+	<span class="c1">// 创建一个elfExe结构体并返回其指针
+</span><span class="c1"></span>	<span class="nx">e</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">elf</span><span class="p">.</span><span class="nf">NewFile</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">elfExe</span><span class="p">{</span><span class="nx">f</span><span class="p">,</span> <span class="nx">e</span><span class="p">},</span> <span class="kc">nil</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="nx">bytes</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;MZ&#34;</span><span class="p">))</span> <span class="p">{</span>
+	<span class="nx">e</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">pe</span><span class="p">.</span><span class="nf">NewFile</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">peExe</span><span class="p">{</span><span class="nx">f</span><span class="p">,</span> <span class="nx">e</span><span class="p">},</span> <span class="kc">nil</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="nx">bytes</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;\xFE\xED\xFA&#34;</span><span class="p">))</span> <span class="o">||</span> <span class="nx">bytes</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;\xFA\xED\xFE&#34;</span><span class="p">))</span> <span class="p">{</span>
+	<span class="nx">e</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">macho</span><span class="p">.</span><span class="nf">NewFile</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">f</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">machoExe</span><span class="p">{</span><span class="nx">f</span><span class="p">,</span> <span class="nx">e</span><span class="p">},</span> <span class="kc">nil</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;unrecognized executable format&#34;</span><span class="p">)</span></code></pre></div>
+<p>因此，正常情况下<code>openExe</code>返回的<code>f</code>是<code>*elfExe, *peExe, *machoExe</code>中的一种。<br></p>
+
+<h3 id="0x0005">0x0005</h3>
+
+<p>继续看<code>ReadExe</code>。<br>
+先遍历<code>f.SectionNames()</code>的返回值，如果其中含有“.note.go.buildid”，则为golang程序。<br>
+elfExe的SectionNames()实现为，返回<code>File</code>的<code>Section</code>字段中每一个元素的<code>Name</code>。<br>
+elfExe的Symbols()实现为：直接调用<code>*File</code>的<code>Symbols()</code>方法，从返回的数据中取出需要的并返回。<br>
+接下来遍历<code>f.Symbols</code>返回的数据。<br></p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">sym</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">syms</span> <span class="p">{</span>
+	<span class="nx">name</span> <span class="o">:=</span> <span class="nx">sym</span><span class="p">.</span><span class="nx">Name</span>
+	<span class="k">if</span> <span class="nx">name</span> <span class="o">==</span> <span class="s">&#34;runtime.main&#34;</span> <span class="o">||</span> <span class="nx">name</span> <span class="o">==</span> <span class="s">&#34;main.main&#34;</span> <span class="p">{</span>
+		<span class="nx">isGo</span> <span class="p">=</span> <span class="kc">true</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasPrefix</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;runtime.&#34;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">HasSuffix</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;$descriptor&#34;</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">isGccgo</span> <span class="p">=</span> <span class="kc">true</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">name</span> <span class="o">==</span> <span class="s">&#34;runtime.buildVersion&#34;</span> <span class="p">{</span>
+		<span class="nx">isGo</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="nx">release</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">readBuildVersion</span><span class="p">(</span><span class="nx">f</span><span class="p">,</span> <span class="nx">sym</span><span class="p">.</span><span class="nx">Addr</span><span class="p">,</span> <span class="nx">sym</span><span class="p">.</span><span class="nx">Size</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">err</span>
+		<span class="p">}</span>
+		<span class="nx">v</span><span class="p">.</span><span class="nx">Release</span> <span class="p">=</span> <span class="nx">release</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="s">&#34;_Cfunc__goboringcrypto_&#34;</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">v</span><span class="p">.</span><span class="nx">BoringCrypto</span> <span class="p">=</span> <span class="kc">true</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">s</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">standardCryptoNames</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">v</span><span class="p">.</span><span class="nx">StandardCrypto</span> <span class="p">=</span> <span class="kc">true</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+<h3 id="0x0006">0x0006</h3>
+
+<p>大致上，gops是根据进程对应的可执行文件的<code>Section</code>和<code>Symbol</code>来判断该文件是否是golang程序。<br></p>
+
+<h3 id="0x0007">0x0007</h3>
+
+<p>关于elf、macho、pe，简介如下:</p>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">Executable and Linkable Format</a> In computing, the Executable and Linkable Format (ELF, formerly named Extensible Linking Format), is a common standard file format for executable files, object code, shared libraries, and core dumps. First published in the specification for the application binary interface (ABI) of the Unix operating system version named System V Release 4 (SVR4), and later in the Tool Interface Standard, it was quickly accepted among different vendors of Unix systems. In 1999, it was chosen as the standard binary file format for Unix and Unix-like systems on x86 processors by the 86open project. By design, ELF is flexible, extensible, and cross-platform, not bound to any given central processing unit (CPU) or instruction set architecture. This has allowed it to be adopted by many different operating systems on many different hardware platforms.</li>
+<li><a href="https://en.wikipedia.org/wiki/Mach-O">Mach-O</a> Mach-O, short for Mach object file format, is a file format for executables, object code, shared libraries, dynamically-loaded code, and core dumps. A replacement for the a.out format, Mach-O offers more extensibility and faster access to information in the symbol table. Mach-O is used by most systems based on the Mach kernel. NeXTSTEP, macOS, and iOS are examples of systems that have used this format for native executables, libraries and object code.</li>
+<li><a href="https://en.wikipedia.org/wiki/Portable_Executable">Portable Executable</a> The Portable Executable (PE) format is a file format for executables, object code, DLLs, FON Font files, and others used in 32-bit and 64-bit versions of Windows operating systems. The PE format is a data structure that encapsulates the information necessary for the Windows OS loader to manage the wrapped executable code. This includes dynamic library references for linking, API export and import tables, resource management data and thread-local storage (TLS) data. On NT operating systems, the PE format is used for EXE, DLL, SYS (device driver), and other file types. The Extensible Firmware Interface (EFI) specification states that PE is the standard executable format in EFI environments.</li>
+</ul>
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://liyiheng.github.io/blog//tags/golang/">golang</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://liyiheng.github.io/blog/2017/11/golang%E5%B0%8F%E5%B7%A5%E5%85%B7%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-toggle="tooltip" data-placement="top" title="[golang小工具]静态文件服务器">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://liyiheng.github.io/blog/2018/05/golang%E4%B8%ADtime.time%E9%9B%B6%E5%80%BC%E7%9A%84json%E5%A4%84%E7%90%86/" data-toggle="tooltip" data-placement="top" title="golang中time.Time“零值”的JSON处理">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              liyiheng
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://liyiheng.github.io/blog/">(≧▽≦)</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

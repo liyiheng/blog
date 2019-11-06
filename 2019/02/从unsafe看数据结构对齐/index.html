@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>从“unsafe”看数据结构对齐 - (≧▽≦)</title>
+  <meta property="og:title" content="从“unsafe”看数据结构对齐" />
+  <meta name="twitter:title" content="从“unsafe”看数据结构对齐" />
+  <meta name="description" content="数据结构对齐是什么？维基百科对其有如下定义：
+
+
+数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。
+内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。
+一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
+内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。
+">
+  <meta property="og:description" content="数据结构对齐是什么？维基百科对其有如下定义：
+
+
+数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。
+内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。
+一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
+内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。
+">
+  <meta name="twitter:description" content="数据结构对齐是什么？维基百科对其有如下定义：
+
+
+数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。
+内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。
+一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
+内存指 …">
+  <meta name="author" content="liyiheng"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "(≧▽≦)",
+    
+    "url": "https:\/\/liyiheng.github.io\/blog\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/liyiheng.github.io\/blog\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/liyiheng.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/liyiheng.github.io\/blog\/2019\/02\/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90\/",
+          "name": "从“unsafe”看数据结构对齐"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "liyiheng"
+  },
+  "headline": "从“unsafe”看数据结构对齐",
+  "description" : "数据结构对齐是什么？维基百科对其有如下定义：\n 数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。\n内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。\n一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。\n内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。\n",
+  "inLanguage" : "zh-cn",
+  "wordCount":  109 ,
+  "datePublished" : "2019-02-23T00:00:00",
+  "dateModified" : "2019-02-23T00:00:00",
+  "image" : "https:\/\/liyiheng.github.io\/blog\/",
+  "keywords" : [ "rust" ],
+  "mainEntityOfPage" : "https:\/\/liyiheng.github.io\/blog\/2019\/02\/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/liyiheng.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/liyiheng.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="从“unsafe”看数据结构对齐" />
+<meta property="og:description" content="数据结构对齐是什么？维基百科对其有如下定义：
+
+
+数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。
+内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。
+一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
+内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。
+">
+<meta property="og:url" content="https://liyiheng.github.io/2019/02/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="(≧▽≦)" />
+  <meta name="twitter:title" content="从“unsafe”看数据结构对齐" />
+  <meta name="twitter:description" content="数据结构对齐是什么？维基百科对其有如下定义：
+
+
+数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。
+内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。
+一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
+内存指 …">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://liyiheng.github.io/2019/02/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="(≧▽≦)" />
+
+  <meta name="generator" content="Hugo 0.59.1" />
+  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/syntax.css" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://liyiheng.github.io/blog/">(≧▽≦)</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="https://liyiheng.github.io/blog/">主页</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Categories" href="https://liyiheng.github.io/blog/categories">Categories</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="https://liyiheng.github.io/blog/tags">Tags</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="https://liyiheng.github.io/blog/#about">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>从“unsafe”看数据结构对齐</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 February 23, 2019
+  
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <p>数据结构对齐是什么？维基百科对其有如下定义：</p>
+
+<blockquote>
+<p>数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。<br>
+内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。<br>
+一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。<br>
+内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。<br></p>
+</blockquote>
+
+<p>以8字节对齐为例：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">foo</span> <span class="kd">struct</span><span class="p">{</span>
+	<span class="nx">a</span> <span class="kt">int64</span>
+	<span class="nx">b</span> <span class="kt">int32</span>
+	<span class="nx">c</span> <span class="kt">int8</span>
+<span class="p">}</span>
+<span class="c1">//  |&lt;-------a------&gt;|
+</span><span class="c1">//  |&lt;--b---&gt;|-c-|---|
+</span><span class="c1"></span>
+<span class="kd">type</span> <span class="nx">bar</span> <span class="kd">struct</span><span class="p">{</span>
+	<span class="nx">a</span> <span class="kt">int64</span>
+	<span class="nx">b</span> <span class="kt">int8</span>
+	<span class="nx">c</span> <span class="kt">int32</span>
+<span class="p">}</span>
+<span class="c1">//  |&lt;-------a------&gt;|
+</span><span class="c1"></span><span class="o">//</span>  <span class="p">|</span><span class="o">-</span><span class="nx">b</span><span class="o">-</span><span class="p">|</span><span class="o">---</span><span class="p">|</span><span class="o">&lt;---</span><span class="nx">c</span><span class="o">--</span><span class="p">&gt;|</span></code></pre></div>
+<p><code>foo</code>在内存中占16字节：</p>
+
+<ol>
+<li>前8字节为<code>foo.a</code></li>
+<li><code>foo.b</code>占接下来的4字节</li>
+<li><code>foo.c</code>占2字节</li>
+<li>最后填充2个空白字节</li>
+</ol>
+
+<p>类似的，<code>bar</code>也占16字节，但填充字节不在最后。</p>
+
+<h3 id="从裸数据到结构体">从裸数据到结构体</h3>
+
+<p>根据数据结构对齐规则，可以在相同字节序及对齐数下方便地实现数据结构与它裸数据的相互转换。</p>
+
+<p>例如，在<code>boltdb</code>中有如下代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// pageInBuffer retrieves a page reference from a given byte array based on the current page size.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">db</span> <span class="o">*</span><span class="nx">DB</span><span class="p">)</span> <span class="nf">pageInBuffer</span><span class="p">(</span><span class="nx">b</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">id</span> <span class="nx">pgid</span><span class="p">)</span> <span class="o">*</span><span class="nx">page</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="nx">page</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">b</span><span class="p">[</span><span class="nx">id</span><span class="o">*</span><span class="nf">pgid</span><span class="p">(</span><span class="nx">db</span><span class="p">.</span><span class="nx">pageSize</span><span class="p">)]))</span>
+<span class="p">}</span></code></pre></div>
+<h3 id="简单试验">简单试验</h3>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="cp">#[derive(Debug)]</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nc">Foo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">a</span>: <span class="kt">u64</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">b</span>: <span class="kt">u16</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">c</span>: <span class="kt">u16</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">fn</span> <span class="nf">convert</span><span class="p">(</span><span class="n">dat</span>: <span class="kp">&amp;</span><span class="p">[</span><span class="kt">u8</span><span class="p">])</span><span class="w"> </span>-&gt; <span class="nc">Foo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">a</span>: <span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>: <span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">c</span>: <span class="mi">0</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span><span class="w">    </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="n">std</span>::<span class="n">ptr</span>::<span class="n">copy_nonoverlapping</span><span class="p">(</span><span class="w">
+</span><span class="w">            </span><span class="n">dat</span><span class="p">.</span><span class="n">as_ptr</span><span class="p">(),</span><span class="w">                  </span><span class="c1">// src ptr
+</span><span class="c1"></span><span class="w">            </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">*</span><span class="k">mut</span><span class="w"> </span><span class="n">Foo</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">*</span><span class="k">mut</span><span class="w"> </span><span class="kt">u8</span><span class="p">,</span><span class="w"> </span><span class="c1">// dst ptr
+</span><span class="c1"></span><span class="w">            </span><span class="mi">16</span><span class="p">,</span><span class="w">                            </span><span class="c1">// ptr length
+</span><span class="c1"></span><span class="w">        </span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">align</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span>::<span class="n">mem</span>::<span class="n">align_of</span>::<span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">();</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">dat</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">u8</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="o">!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span><span class="w"> </span><span class="c1">// 257
+</span><span class="c1"></span><span class="w">    </span><span class="n">dat</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">vec</span><span class="o">!</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]);</span><span class="w"> </span><span class="c1">// 256
+</span><span class="c1"></span><span class="w">    </span><span class="n">dat</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">vec</span><span class="o">!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]);</span><span class="w"> </span><span class="c1">// 1
+</span><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">convert</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dat</span><span class="p">[..]);</span><span class="w">
+</span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;Align:{}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">align</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;{:?}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">);</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<h3 id="结论">结论</h3>
+
+<ol>
+<li><code>unsafe</code>可行</li>
+<li><code>unsafe</code>限制多、风险大</li>
+<li>远离<code>unsafe</code></li>
+<li>远离<code>unsafe</code></li>
+<li>远离<code>unsafe</code></li>
+</ol>
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://liyiheng.github.io/blog//tags/rust/">rust</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://liyiheng.github.io/blog/2018/10/%E8%AE%B0%E4%B8%80%E6%AC%A1%E8%A2%AB%E9%BB%91/" data-toggle="tooltip" data-placement="top" title="记一次被黑">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://liyiheng.github.io/blog/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/" data-toggle="tooltip" data-placement="top" title="Actix-web中间件、handler间传递数据">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              liyiheng
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://liyiheng.github.io/blog/">(≧▽≦)</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

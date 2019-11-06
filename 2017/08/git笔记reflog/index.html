@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-cn" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>git笔记(reflog) - (≧▽≦)</title>
+  <meta property="og:title" content="git笔记(reflog)" />
+  <meta name="twitter:title" content="git笔记(reflog)" />
+  <meta name="description" content="
+不熟悉git，差点翻车
+">
+  <meta property="og:description" content="
+不熟悉git，差点翻车
+">
+  <meta name="twitter:description" content="
+不熟悉git，差点翻车
+">
+  <meta name="author" content="liyiheng"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "(≧▽≦)",
+    
+    "url": "https:\/\/liyiheng.github.io\/blog\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/liyiheng.github.io\/blog\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/liyiheng.github.io\/blog\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/liyiheng.github.io\/blog\/2017\/08\/git%E7%AC%94%E8%AE%B0reflog\/",
+          "name": "Git笔记(reflog)"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "liyiheng"
+  },
+  "headline": "git笔记(reflog)",
+  "description" : " 不熟悉git，差点翻车\n",
+  "inLanguage" : "zh-cn",
+  "wordCount":  222 ,
+  "datePublished" : "2017-08-10T00:00:00",
+  "dateModified" : "2017-08-10T00:00:00",
+  "image" : "https:\/\/liyiheng.github.io\/blog\/",
+  "keywords" : [ "git" ],
+  "mainEntityOfPage" : "https:\/\/liyiheng.github.io\/blog\/2017\/08\/git%E7%AC%94%E8%AE%B0reflog\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/liyiheng.github.io\/blog\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/liyiheng.github.io\/blog\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="git笔记(reflog)" />
+<meta property="og:description" content="
+不熟悉git，差点翻车
+">
+<meta property="og:url" content="https://liyiheng.github.io/2017/08/git%E7%AC%94%E8%AE%B0reflog/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="(≧▽≦)" />
+  <meta name="twitter:title" content="git笔记(reflog)" />
+  <meta name="twitter:description" content="
+不熟悉git，差点翻车
+">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://liyiheng.github.io/2017/08/git%E7%AC%94%E8%AE%B0reflog/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="(≧▽≦)" />
+
+  <meta name="generator" content="Hugo 0.59.1" />
+  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/syntax.css" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">切换导航</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://liyiheng.github.io/blog/">(≧▽≦)</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="主页" href="https://liyiheng.github.io/blog/">主页</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Categories" href="https://liyiheng.github.io/blog/categories">Categories</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="Tags" href="https://liyiheng.github.io/blog/tags">Tags</a>
+            </li>
+          
+        
+          
+            <li>
+              <a title="About" href="https://liyiheng.github.io/blog/#about">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>git笔记(reflog)</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;发表于 August 10, 2017
+  
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        <blockquote>
+<p>不熟悉git，差点翻车</p>
+</blockquote>
+
+<p>一如既往，在项目中添加某特性后愉快地提交</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">git commit -m <span class="s2">&#34;Feature add: blablabla&#34;</span> -- a.go b.go c.go</code></pre></div>
+<p><code>git push</code>前习惯性地<code>git status</code><br>
+于是发现了漏网的：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">On branch develop
+Your branch is up-to-date with <span class="s1">&#39;origin/develop&#39;</span>.
+Changes not staged <span class="k">for</span> commit:
+  <span class="o">(</span>use <span class="s2">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class="o">)</span>
+  <span class="o">(</span>use <span class="s2">&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class="o">)</span>
+
+        modified:   没打算提交.go
+        modified:   忘了提交.go
+
+no changes added to commit <span class="o">(</span>use <span class="s2">&#34;git add&#34;</span> and/or <span class="s2">&#34;git commit -a&#34;</span><span class="o">)</span></code></pre></div>
+<p>漏了个文件而已，老司机肯定会顺手补上：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">git commit --amend 忘了提交.go</code></pre></div>
+<p>然而渣渣哪会这种操作，那就reset再重新提交吧</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">git reset --keep 上一次的commitID</code></pre></div>
+<p>这时候我想要的git status结果是:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">n branch develop
+Your branch is up-to-date with <span class="s1">&#39;origin/develop&#39;</span>.
+Changes not staged <span class="k">for</span> commit:
+  <span class="o">(</span>use <span class="s2">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class="o">)</span>
+  <span class="o">(</span>use <span class="s2">&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class="o">)</span>
+
+        modified:   没打算提交.go
+        modified:   忘了提交.go
+	modified:   a.go
+	modified:   b.go
+	modified:   c.go
+
+no changes added to commit <span class="o">(</span>use <span class="s2">&#34;git add&#34;</span> and/or <span class="s2">&#34;git commit -a&#34;</span><span class="o">)</span></code></pre></div>
+<p>其实是用错了reset的参数，如果用了mixed就是上面的结果
+详情请参阅<code>git help reset</code>
+由于用错了参数，看到的结果仍然是：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">On branch develop
+Your branch is up-to-date with <span class="s1">&#39;origin/develop&#39;</span>.
+Changes not staged <span class="k">for</span> commit:
+  <span class="o">(</span>use <span class="s2">&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class="o">)</span>
+  <span class="o">(</span>use <span class="s2">&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class="o">)</span>
+
+        modified:   没打算提交.go
+        modified:   忘了提交.go
+
+no changes added to commit <span class="o">(</span>use <span class="s2">&#34;git add&#34;</span> and/or <span class="s2">&#34;git commit -a&#34;</span><span class="o">)</span></code></pre></div>
+<p>而且，刚刚提交的文件也变回了上次提交后的状态。也就是说上次提交的更改都丢了，反而对<code>忘了提交.go</code>的更改没有丢失<br>
+呵呵哒，吓得我键盘都飞出去了<br>
+于是仔(大)细(概)研(了)究(解)了一下git的机制。<br>
+果然，还是没找到办法<br>
+方了，彻底方了<br>
+。。。<br>
+。。。<br>
+google诚不我欺，无意间搜到了<code>reflog</code><br></p>
+
+<hr />
+
+<p>先<code>git reflog</code>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">cc976e6 HEAD@<span class="o">{</span><span class="m">0</span><span class="o">}</span>: reset: moving to cc976e634a9c7bc81ebfa27668fe24bc6804c80d
+c24d9b5 HEAD@<span class="o">{</span><span class="m">1</span><span class="o">}</span>: commit: Feature add: blablabla</code></pre></div>
+<p>再<code>git reset --keep c24d9b5</code><br>
+最后<code>git commit --amend 忘了提交.go</code></p>
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://liyiheng.github.io/blog//tags/git/">git</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://liyiheng.github.io/blog/2017/06/%E8%AF%91golang%E4%B8%ADjson%E5%92%8C%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E7%BB%84%E5%90%88%E4%BD%BF%E7%94%A8/" data-toggle="tooltip" data-placement="top" title="[译]Golang中JSON和结构体的组合使用">&larr; 前一篇</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://liyiheng.github.io/blog/2017/08/golang%E7%AC%94%E8%AE%B0%E6%B8%B8%E6%88%8F%E4%B8%AD%E6%8E%92%E8%A1%8C%E6%A6%9C%E7%9A%84%E5%AE%9E%E7%8E%B0/" data-toggle="tooltip" data-placement="top" title="golang笔记：游戏中排行榜的实现">后一篇 &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              liyiheng
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2019
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://liyiheng.github.io/blog/">(≧▽≦)</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+  </body>
+</html>
+
