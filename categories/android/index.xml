@@ -18,7 +18,6 @@
       
       <guid>https://liyiheng.github.io/blog/2017/03/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
       <description>&lt;p&gt;虽然更倾向于retrofit + okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒&lt;a href=&#34;https://github.com/google/volley&#34;&gt;Volley的源码&lt;/a&gt;吧&lt;/p&gt;
-
 &lt;p&gt;主要是分析Volley的部分实现，不再涉及&lt;a href=&#34;https://github.com/liyiheng/EasyVolley&#34;&gt;具体使用和二次封装&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     

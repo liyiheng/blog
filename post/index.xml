@@ -6,10 +6,20 @@
     <description>Recent content in Posts on (≧▽≦)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 28 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Mar 2020 11:44:44 +0800</lastBuildDate>
     
 	<atom:link href="https://liyiheng.github.io/blog/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>6.824 Lab2 总结</title>
+      <link>https://liyiheng.github.io/blog/2020/03/6.824-lab2-%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sat, 07 Mar 2020 11:44:44 +0800</pubDate>
+      
+      <guid>https://liyiheng.github.io/blog/2020/03/6.824-lab2-%E6%80%BB%E7%BB%93/</guid>
+      <description>&lt;p&gt;6.824课程的Lab2是实现Raft，分为2A、2B、2C三部分。
+2A实现leader选举与心跳；2B实现日志复制；2C实现持久化。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Actix-web中间件、handler间传递数据</title>
@@ -17,7 +27,7 @@
       <pubDate>Sun, 28 Apr 2019 00:00:00 +0000</pubDate>
       
       <guid>https://liyiheng.github.io/blog/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/</guid>
-      <description>&lt;p&gt;背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。&lt;br&gt;
+      <description>&lt;p&gt;背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。&lt;!-- raw HTML omitted --&gt;
 例如: Handler中使用&lt;code&gt;Auth&lt;/code&gt;中间件从token中解出的&lt;code&gt;user_id&lt;/code&gt;。&lt;/p&gt;</description>
     </item>
     
@@ -28,12 +38,11 @@
       
       <guid>https://liyiheng.github.io/blog/2019/02/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90/</guid>
       <description>&lt;p&gt;数据结构对齐是什么？维基百科对其有如下定义：&lt;/p&gt;
-
 &lt;blockquote&gt;
-&lt;p&gt;数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。&lt;br&gt;
-内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。&lt;br&gt;
-一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。&lt;br&gt;
-内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。&lt;!-- raw HTML omitted --&gt;
+内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。&lt;!-- raw HTML omitted --&gt;
+一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。&lt;!-- raw HTML omitted --&gt;
+内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
 &lt;/blockquote&gt;</description>
     </item>
     
@@ -65,11 +74,11 @@
       
       <guid>https://liyiheng.github.io/blog/2018/05/golang%E4%B8%ADtime.time%E9%9B%B6%E5%80%BC%E7%9A%84json%E5%A4%84%E7%90%86/</guid>
       <description>&lt;h2 id=&#34;场景&#34;&gt;场景&lt;/h2&gt;
-
 &lt;p&gt;数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;MyStruct&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
 	&lt;span class=&#34;nx&#34;&gt;Time&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;time&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Time&lt;/span&gt;
-&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -78,13 +87,11 @@
       <pubDate>Mon, 13 Nov 2017 00:00:00 +0000</pubDate>
       
       <guid>https://liyiheng.github.io/blog/2017/11/google/gops%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-      <description>&lt;p&gt;发现了一个很实用的工具：gops&lt;br&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;发现了一个很实用的工具：gops&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;gops is a command to list and diagnose Go processes currently running on your system.&lt;/p&gt;
 &lt;/blockquote&gt;
-
-&lt;p&gt;觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。&lt;br&gt;&lt;/p&gt;</description>
+&lt;p&gt;觉得判断一个进程是否是go程序挺有意思，不妨看看它的大致实现。&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -93,9 +100,9 @@
       <pubDate>Mon, 06 Nov 2017 00:00:00 +0000</pubDate>
       
       <guid>https://liyiheng.github.io/blog/2017/11/golang%E5%B0%8F%E5%B7%A5%E5%85%B7%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
-      <description>&lt;p&gt;把电脑上的文件传到手机上，或者传给其他电脑，这是再常见不过的事了。&lt;br&gt;
-这种情况通常是用PC端的qq或微信给手机发送文件。&lt;br&gt;
-不过对Linux用户来说，wine上的qq多少有些不靠谱，web微信在传输大文件时也经常出问题。&lt;br&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;把电脑上的文件传到手机上，或者传给其他电脑，这是再常见不过的事了。&lt;!-- raw HTML omitted --&gt;
+这种情况通常是用PC端的qq或微信给手机发送文件。&lt;!-- raw HTML omitted --&gt;
+不过对Linux用户来说，wine上的qq多少有些不靠谱，web微信在传输大文件时也经常出问题。&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -107,7 +114,6 @@
       <description>&lt;blockquote&gt;
 &lt;p&gt;原文地址 &lt;a href=&#34;https://scene-si.org/2017/08/22/embedding-data-in-go-executables/&#34;&gt;https://scene-si.org/2017/08/22/embedding-data-in-go-executables/&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;p&gt;假如你已经关注了我一段时间，应该知道我正在开发&lt;a href=&#34;https://github.com/titpetric/pendulum&#34;&gt;Pendulum编辑器&lt;/a&gt;作为每天至少编码一小时的&lt;a href=&#34;http://100daysofcode.com/&#34;&gt;#100DaysOfCode&lt;/a&gt;挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。&lt;/p&gt;</description>
     </item>
     
@@ -117,7 +123,7 @@
       <pubDate>Tue, 29 Aug 2017 00:00:00 +0000</pubDate>
       
       <guid>https://liyiheng.github.io/blog/2017/08/golang%E7%AC%94%E8%AE%B0%E6%B8%B8%E6%88%8F%E4%B8%AD%E6%8E%92%E8%A1%8C%E6%A6%9C%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
-      <description>&lt;p&gt;游戏开发中排行榜经常出现,接触过的排行榜有两种。一种是由玩家挑战排名比自己靠前的其他玩家，胜利后交换位置；另一种是根据玩家的某特性对所有玩家进行排序。第一种只涉及到两个玩家数据的变化，实现起来比较简单，因此只记录第二种情况。&lt;br&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;游戏开发中排行榜经常出现,接触过的排行榜有两种。一种是由玩家挑战排名比自己靠前的其他玩家，胜利后交换位置；另一种是根据玩家的某特性对所有玩家进行排序。第一种只涉及到两个玩家数据的变化，实现起来比较简单，因此只记录第二种情况。&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -137,8 +143,8 @@
       <pubDate>Thu, 22 Jun 2017 00:00:00 +0000</pubDate>
       
       <guid>https://liyiheng.github.io/blog/2017/06/%E8%AF%91golang%E4%B8%ADjson%E5%92%8C%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E7%BB%84%E5%90%88%E4%BD%BF%E7%94%A8/</guid>
-      <description>&lt;p&gt;原文地址：&lt;a href=&#34;http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/&#34;&gt;http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/&lt;/a&gt;
-&lt;br&gt;
+      <description>&lt;p&gt;原文地址：http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/
+&lt;!-- raw HTML omitted --&gt;
 假设你正在把一个JSON对象解码为Go的结构体。该JSON来自不受你控制的服务，因此你无法操作它的模式。但你想用不同的方式进行编码。&lt;/p&gt;</description>
     </item>
     
@@ -167,7 +173,6 @@
       
       <guid>https://liyiheng.github.io/blog/2017/03/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
       <description>&lt;p&gt;虽然更倾向于retrofit + okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒&lt;a href=&#34;https://github.com/google/volley&#34;&gt;Volley的源码&lt;/a&gt;吧&lt;/p&gt;
-
 &lt;p&gt;主要是分析Volley的部分实现，不再涉及&lt;a href=&#34;https://github.com/liyiheng/EasyVolley&#34;&gt;具体使用和二次封装&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     

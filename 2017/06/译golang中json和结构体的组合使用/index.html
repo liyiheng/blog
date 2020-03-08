@@ -69,7 +69,7 @@
   "headline": "[译]Golang中JSON和结构体的组合使用",
   "description" : "原文地址：http:\/\/attilaolah.eu\/2014\/09\/10\/json-and-struct-composition-in-go\/ 假设你正在把一个JSON对象解码为Go的结构体。该JSON来自不受你控制的服务，因此你无法操作它的模式。但你想用不同的方式进行编码。\n",
   "inLanguage" : "zh-cn",
-  "wordCount":  205 ,
+  "wordCount":  195 ,
   "datePublished" : "2017-06-22T00:00:00",
   "dateModified" : "2017-06-22T00:00:00",
   "image" : "https:\/\/liyiheng.github.io\/blog\/",
@@ -105,7 +105,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="(≧▽≦)" />
 
-  <meta name="generator" content="Hugo 0.59.1" />
+  <meta name="generator" content="Hugo 0.66.0" />
   <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -272,30 +272,24 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>原文地址：<a href="http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/">http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/</a>
-<br>
+        <p>原文地址：http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/
+<!-- raw HTML omitted -->
 假设你正在把一个JSON对象解码为Go的结构体。该JSON来自不受你控制的服务，因此你无法操作它的模式。但你想用不同的方式进行编码。</p>
-
-<p>你可以随意使用<code>json.Marshaler</code>，但它有一些坑：<br></p>
-
+<p>你可以随意使用<code>json.Marshaler</code>，但它有一些坑：<!-- raw HTML omitted --></p>
 <ul>
 <li><strong>复杂度</strong>： 为了大型结构体添加大量额外代码</li>
 <li><strong>内存占用</strong>： 为了不分配不必要的内存需要尽量小心</li>
 </ul>
-
-<p>其实，大多数情况下你可以在<code>MarshalJSON()</code>中避免内存分配，但这会增加复杂度，因为这些处理在你的代码中（而不是<code>encoding/json</code>），因此你得对它进行单元测试。这就需要撸更多枯燥的代码。<br></p>
-
+<p>其实，大多数情况下你可以在<code>MarshalJSON()</code>中避免内存分配，但这会增加复杂度，因为这些处理在你的代码中（而不是<code>encoding/json</code>），因此你得对它进行单元测试。这就需要撸更多枯燥的代码。<!-- raw HTML omitted --></p>
 <p>下面是一些处理大结构体的一些小技巧。</p>
-
 <h2 id="忽略字段">忽略字段</h2>
-
 <p>假设你有这么一个结构体：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span>
     <span class="nx">Email</span>    <span class="kt">string</span> <span class="s">`json:&#34;email&#34;`</span>
     <span class="nx">Password</span> <span class="kt">string</span> <span class="s">`json:&#34;password&#34;`</span>
     <span class="c1">// 大量字段。。。
-</span><span class="c1"></span><span class="p">}</span></code></pre></div>
-<p>现在你需要对<code>User</code>进行转码，但不能包含<code>password</code>字段。通过结构体组合处理这种情况的简单方法是用另一个结构体包裹它：</p>
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>现在你需要对<code>User</code>进行转码，但不能包含<code>password</code>字段。通过结构体组合处理这种情况的简单方法是用另一个结构体包裹它：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">omit</span> <span class="o">*</span><span class="kd">struct</span><span class="p">{}</span>
 
 <span class="kd">type</span> <span class="nx">PublicUser</span> <span class="kd">struct</span> <span class="p">{</span>
@@ -306,21 +300,19 @@
 <span class="c1">// 当你想对User进行编码时：
 </span><span class="c1"></span><span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">PublicUser</span><span class="p">{</span>
     <span class="nx">User</span><span class="p">:</span> <span class="nx">user</span><span class="p">,</span>
-<span class="p">})</span></code></pre></div>
-<p>这里的技巧是我们不会设置<code>PublishUser</code>的<code>Password</code>字段，由于是指针类型，它的默认值是<code>nil</code>，并且会被忽略（因为设置了<code>omitempty</code>）。<br>
-需要注意的是，没有必要声明<code>omit</code>类型，我们可以用<code>*struct{}</code>甚至<code>bool</code>或<code>int</code>。但是声明这个类型能够显示地表示我们要在输出中忽略该字段。使用哪个内建类型并不重要，只要它是能被<code>omitempty</code>识别的零值。<br>
+<span class="p">})</span>
+</code></pre></div><p>这里的技巧是我们不会设置<code>PublishUser</code>的<code>Password</code>字段，由于是指针类型，它的默认值是<code>nil</code>，并且会被忽略（因为设置了<code>omitempty</code>）。<!-- raw HTML omitted -->
+需要注意的是，没有必要声明<code>omit</code>类型，我们可以用<code>*struct{}</code>甚至<code>bool</code>或<code>int</code>。但是声明这个类型能够显示地表示我们要在输出中忽略该字段。使用哪个内建类型并不重要，只要它是能被<code>omitempty</code>识别的零值。<!-- raw HTML omitted -->
 我们也可以只用匿名值：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span> <span class="p">{</span>
     <span class="o">*</span><span class="nx">User</span>
     <span class="nx">Password</span> <span class="kt">bool</span> <span class="s">`json:&#34;password,omitempty&#34;`</span>
 <span class="p">}{</span>
     <span class="nx">User</span><span class="p">:</span> <span class="nx">user</span><span class="p">,</span>
-<span class="p">})</span></code></pre></div>
-<p>去playground<a href="http://play.golang.org/p/aED6MyYDaJ">试试</a><br>
+<span class="p">})</span>
+</code></pre></div><p>去playground<a href="http://play.golang.org/p/aED6MyYDaJ">试试</a><!-- raw HTML omitted -->
 另外需要注意的是，我们只包含了一个原始<code>User</code>结构体的指针，这避免了复制一个新的<code>User</code>。</p>
-
 <h2 id="增加额外字段">增加额外字段</h2>
-
 <p>添加字段甚至比忽略字段更简单。继续我们之前的栗子，隐藏密码字段再暴露一个额外的<code>token</code>属性：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">omit</span> <span class="o">*</span><span class="kd">struct</span><span class="p">{}</span>
 
@@ -333,11 +325,9 @@
 <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="nx">PublicUser</span><span class="p">{</span>
     <span class="nx">User</span><span class="p">:</span>  <span class="nx">user</span><span class="p">,</span>
     <span class="nx">Token</span><span class="p">:</span> <span class="nx">token</span><span class="p">,</span>
-<span class="p">})</span></code></pre></div>
-<p>去playground<a href="https://play.golang.org/p/ckNtE6FhOt">试试</a><br></p>
-
+<span class="p">})</span>
+</code></pre></div><p>去playground<a href="https://play.golang.org/p/ckNtE6FhOt">试试</a><!-- raw HTML omitted --></p>
 <h2 id="组合结构体">组合结构体</h2>
-
 <p>这在组合来自不同服务的数据时很方便。举个例子，这是个含有统计数据的的<code>BlogPost</code>结构体：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">BlogPost</span> <span class="kd">struct</span> <span class="p">{</span>
     <span class="nx">URL</span>   <span class="kt">string</span> <span class="s">`json:&#34;url&#34;`</span>
@@ -352,11 +342,9 @@
 <span class="nx">json</span><span class="p">.</span><span class="nf">Marshal</span><span class="p">(</span><span class="kd">struct</span><span class="p">{</span>
     <span class="o">*</span><span class="nx">BlogPost</span>
     <span class="o">*</span><span class="nx">Analytics</span>
-<span class="p">}{</span><span class="nx">post</span><span class="p">,</span> <span class="nx">analytics</span><span class="p">})</span></code></pre></div>
-<p>去playground<a href="http://play.golang.org/p/vhE_JJUnsB">试试</a><br></p>
-
+<span class="p">}{</span><span class="nx">post</span><span class="p">,</span> <span class="nx">analytics</span><span class="p">})</span>
+</code></pre></div><p>去playground<a href="http://play.golang.org/p/vhE_JJUnsB">试试</a><!-- raw HTML omitted --></p>
 <h2 id="切分对象">切分对象</h2>
-
 <p>这根组合结构体正好相反。就像我们对组合的结构体进行编码一样，我们也可以解码到分别使用JSON字段的结构体组合：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">`{
 </span><span class="s">  &#34;url&#34;: &#34;attila@attilaolah.eu&#34;,
@@ -366,12 +354,10 @@
 </span><span class="s">}`</span><span class="p">),</span> <span class="o">&amp;</span><span class="kd">struct</span> <span class="p">{</span>
   <span class="o">*</span><span class="nx">BlogPost</span>
   <span class="o">*</span><span class="nx">Analytics</span>
-<span class="p">}{</span><span class="o">&amp;</span><span class="nx">post</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">analytics</span><span class="p">})</span></code></pre></div>
-<p>去playground<a href="http://play.golang.org/p/A3Fv9WW9A5">试试</a><br></p>
-
+<span class="p">}{</span><span class="o">&amp;</span><span class="nx">post</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">analytics</span><span class="p">})</span>
+</code></pre></div><p>去playground<a href="http://play.golang.org/p/A3Fv9WW9A5">试试</a><!-- raw HTML omitted --></p>
 <h2 id="字段重命名">字段重命名</h2>
-
-<p>这个是移除字段和添加额外字段的组合使用：我们简单地移除一个字段再用一个不同的<code>json:</code>标记。这可以用指针的方式避免额外的内存分配。不过对于小的数据类型来说间接开销可能跟复制一份需要分配的内存相同，还要加上运行时开销。<br>
+<p>这个是移除字段和添加额外字段的组合使用：我们简单地移除一个字段再用一个不同的<code>json:</code>标记。这可以用指针的方式避免额外的内存分配。不过对于小的数据类型来说间接开销可能跟复制一份需要分配的内存相同，还要加上运行时开销。<!-- raw HTML omitted -->
 下面是重命名两个结构体字段的例子，通过指针间接地使用嵌套的结构体，整型则直接复制：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">CacheItem</span> <span class="kd">struct</span> <span class="p">{</span>
     <span class="nx">Key</span>    <span class="kt">string</span> <span class="s">`json:&#34;key&#34;`</span>
@@ -397,12 +383,13 @@
 
     <span class="c1">// Set the nested struct by reference, avoid making a copy:
 </span><span class="c1"></span>    <span class="nx">Value</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">item</span><span class="p">.</span><span class="nx">Value</span><span class="p">,</span>
-<span class="p">})</span></code></pre></div>
-<p>去playground<a href="https://play.golang.org/p/GWKO7u53WL">试试</a><br>
+<span class="p">})</span>
+</code></pre></div><p>去playground<a href="https://play.golang.org/p/GWKO7u53WL">试试</a><!-- raw HTML omitted -->
 需要注意的是，这只有在需要重命名一个大结构体中一两个字段的时候实用。当需要重命名所有字段时，通常建一个全新的对象（如 serialiser）更简单（代码也更干净），避免实用结构体组合的方式。</p>
-
-<p>相关文章：<br>
-- <a href="http://attilaolah.eu/2013/11/29/json-decoding-in-go/">JSON decoding in Go</a></p>
+<p>相关文章：<!-- raw HTML omitted --></p>
+<ul>
+<li><a href="http://attilaolah.eu/2013/11/29/json-decoding-in-go/">JSON decoding in Go</a></li>
+</ul>
 
         
           <div class="blog-tags">
@@ -458,7 +445,7 @@
 
           &nbsp;&bull;&nbsp;&copy;
           
-            2019
+            2020
           
 
           
@@ -468,7 +455,7 @@
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="http://gohugo.io">Hugo v0.66.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>

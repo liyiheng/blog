@@ -95,7 +95,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="(≧▽≦)" />
 
-  <meta name="generator" content="Hugo 0.59.1" />
+  <meta name="generator" content="Hugo 0.66.0" />
   <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -263,88 +263,92 @@
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
         <p>整理常见的几种单例实现</p>
-
-<h5 id="单例多有静态引用-android中涉及到activity-fragment-service-view等含有context的对象须注意防止内存泄露">单例多有静态引用，Android中涉及到Activity、Fragment、Service、View等含有Context的对象须注意防止内存泄露</h5>
-
+<h5 id="单例多有静态引用android中涉及到activityfragmentserviceview等含有context的对象须注意防止内存泄露">单例多有静态引用，Android中涉及到Activity、Fragment、Service、View等含有Context的对象须注意防止内存泄露</h5>
 <ul>
-<li><p>1.最简单的一种，饿汉模式</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">class Singleton</span><span class="p">{</span>
-    <span class="err">private static Singleton sInstance </span><span class="o">=</span> <span class="k">new</span> <span class="n">Singleton</span><span class="p">();</span>
-    <span class="err">private Singleton</span><span class="p">()</span> <span class="p">{}</span>
-            
-    <span class="err">public static synchronized Singleton </span><span class="n">getsInstance</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">sInstance</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div></li>
-
-<li><p>2.懒汉模式。第一次使用时实例化，因此需要加锁</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">class Singleton </span><span class="p">{</span>
-    <span class="err">private static Singleton sInstance</span><span class="p">;</span>
-        
-    <span class="err">private Singleton</span><span class="p">()</span> <span class="p">{}</span>
-            
-    <span class="c1">// 整个方法加上synchronized关键字
-</span><span class="c1"></span>    <span class="err">public static synchronized Singleton </span><span class="n">getsInstance</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">sInstance</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">sInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">sInstance</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
-<p>由于每次调用方法都要同步，开销较大，因此通常使用两次判断加锁的方式实现</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">class Singleton </span><span class="p">{</span>
-    <span class="err">private static Singleton sInstance</span><span class="p">;</span>
-        
-    <span class="err">private Singleton</span><span class="p">()</span> <span class="p">{}</span>
-    <span class="c1">// 只在没有实例时加锁以提高性能
-</span><span class="c1"></span>    <span class="err">public static Singleton getInstance</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">sInstance</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-            <span class="kd">synchronized</span> <span class="p">(</span><span class="n">Singleton</span><span class="p">.</span><span class="na">class</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">sInstance</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="n">sInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton</span><span class="p">();</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">sInstance</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div></li>
-
-<li><p>3.枚举方式，从<a href="https://github.com/hehonghui">何老师</a>《Android源码设计模式解析与实战》一书中了解到这种方式。枚举单例不仅实现简单，实例的创建也是线程安全的，而且不同于其他几种方式，即使通过序列化和反序列化也不能创建多个实例</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">enum Singleton</span><span class="p">{</span>
-    <span class="n">instance</span><span class="p">,</span>
-    <span class="err">public void </span><span class="n">greeting</span><span class="p">(){</span>
-        <span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div></li>
-
-<li><p>4.通过InstanceHolder持有实例。这种方式只有第一次调用getInstance()方法时才会创建实例，并且是线程安全的</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">class Singleton </span><span class="p">{</span>
-    <span class="err">private Singleton</span><span class="p">()</span> <span class="p">{}</span>
-    <span class="err">public static Singleton getInstance</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">Holder</span><span class="p">.</span><span class="na">sInstance</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="err">private static class Holder</span><span class="p">{</span>
-        <span class="err">private static final Singleton </span><span class="n">sInstance</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div></li>
-
-<li><p>5.使用容器对多个单例统一管理。也是在何老师书中学到，Android源码中对一些系统级服务的管理便是采用这种方式</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">class Singletons </span><span class="p">{</span>
-    <span class="err">private static </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="err">Object&gt; sContainer </span><span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;</span><span class="p">();</span>
-        
-    <span class="err">private Singletons</span><span class="p">()</span> <span class="p">{}</span>
-        
-    <span class="err">public static void register</span><span class="p">(</span><span class="err">String key</span><span class="p">,</span> <span class="err">Object instance</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sContainer</span><span class="p">.</span><span class="na">containsKey</span><span class="p">(</span><span class="n">key</span><span class="p">))</span> <span class="p">{</span>
-            <span class="n">sContainer</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">instance</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-        
-    <span class="err">public static Object getInstance</span><span class="p">(</span><span class="err">String key</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="n">sContainer</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div></li>
+<li>1.最简单的一种，饿汉模式</li>
 </ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">class</span> <span class="nc">Singleton</span><span class="o">{</span>
+        <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton</span> <span class="n">sInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton</span><span class="o">();</span>
+        <span class="kd">private</span> <span class="nf">Singleton</span><span class="o">()</span> <span class="o">{}</span>
+            
+        <span class="kd">public</span> <span class="kd">static</span> <span class="kd">synchronized</span> <span class="n">Singleton</span> <span class="nf">getsInstance</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">sInstance</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div><ul>
+<li>2.懒汉模式。第一次使用时实例化，因此需要加锁</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">class</span> <span class="nc">Singleton</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton</span> <span class="n">sInstance</span><span class="o">;</span>
+        
+        <span class="kd">private</span> <span class="nf">Singleton</span><span class="o">()</span> <span class="o">{}</span>
+            
+        <span class="c1">// 整个方法加上synchronized关键字
+</span><span class="c1"></span>        <span class="kd">public</span> <span class="kd">static</span> <span class="kd">synchronized</span> <span class="n">Singleton</span> <span class="nf">getsInstance</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">sInstance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">sInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">sInstance</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div><pre><code> 由于每次调用方法都要同步，开销较大，因此通常使用两次判断加锁的方式实现
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">class</span> <span class="nc">Singleton</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="kd">static</span> <span class="n">Singleton</span> <span class="n">sInstance</span><span class="o">;</span>
+        
+        <span class="kd">private</span> <span class="nf">Singleton</span><span class="o">()</span> <span class="o">{}</span>
+        <span class="c1">// 只在没有实例时加锁以提高性能
+</span><span class="c1"></span>        <span class="kd">public</span> <span class="kd">static</span> <span class="n">Singleton</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">sInstance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="kd">synchronized</span> <span class="o">(</span><span class="n">Singleton</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="n">sInstance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">sInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Singleton</span><span class="o">();</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">sInstance</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div><ul>
+<li>3.枚举方式，从<a href="https://github.com/hehonghui">何老师</a>《Android源码设计模式解析与实战》一书中了解到这种方式。枚举单例不仅实现简单，实例的创建也是线程安全的，而且不同于其他几种方式，即使通过序列化和反序列化也不能创建多个实例</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">enum</span> <span class="n">Singleton</span><span class="o">{</span>
+        <span class="n">instance</span><span class="o">,</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">greeting</span><span class="o">(){</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div><ul>
+<li>4.通过InstanceHolder持有实例。这种方式只有第一次调用getInstance()方法时才会创建实例，并且是线程安全的</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">class</span> <span class="nc">Singleton</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="nf">Singleton</span><span class="o">()</span> <span class="o">{}</span>
+        <span class="kd">public</span> <span class="kd">static</span> <span class="n">Singleton</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">Holder</span><span class="o">.</span><span class="na">sInstance</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Holder</span><span class="o">{</span>
+            <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Singleton</span> <span class="n">sInstance</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div><ul>
+<li>5.使用容器对多个单例统一管理。也是在何老师书中学到，Android源码中对一些系统级服务的管理便是采用这种方式</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">    <span class="kd">class</span> <span class="nc">Singletons</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="kd">static</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">sContainer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+        
+        <span class="kd">private</span> <span class="nf">Singletons</span><span class="o">()</span> <span class="o">{}</span>
+        
+        <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">register</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Object</span> <span class="n">instance</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">sContainer</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">sContainer</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">instance</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        
+        <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">getInstance</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">sContainer</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div>
 
         
           <div class="blog-tags">
@@ -402,7 +406,7 @@
 
           &nbsp;&bull;&nbsp;&copy;
           
-            2019
+            2020
           
 
           
@@ -412,7 +416,7 @@
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="http://gohugo.io">Hugo v0.66.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>

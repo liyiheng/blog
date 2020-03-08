@@ -11,23 +11,23 @@
   <meta property="og:title" content="golang中time.Time“零值”的JSON处理" />
   <meta name="twitter:title" content="golang中time.Time“零值”的JSON处理" />
   <meta name="description" content="场景
-
 数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。
 type MyStruct struct{
 	Time time.Time
-}">
+}
+">
   <meta property="og:description" content="场景
-
 数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。
 type MyStruct struct{
 	Time time.Time
-}">
+}
+">
   <meta name="twitter:description" content="场景
-
 数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。
 type MyStruct struct{
 	Time time.Time
-}">
+}
+">
   <meta name="author" content="liyiheng"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -76,7 +76,7 @@ type MyStruct struct{
     "name" : "liyiheng"
   },
   "headline": "golang中time.Time“零值”的JSON处理",
-  "description" : "场景 数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。\ntype MyStruct struct{ Time time.Time }",
+  "description" : "场景 数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。\ntype MyStruct struct{ Time time.Time } ",
   "inLanguage" : "zh-cn",
   "wordCount":  94 ,
   "datePublished" : "2018-05-29T00:00:00",
@@ -99,28 +99,28 @@ type MyStruct struct{
 
 <meta property="og:title" content="golang中time.Time“零值”的JSON处理" />
 <meta property="og:description" content="场景
-
 数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。
 type MyStruct struct{
 	Time time.Time
-}">
+}
+">
 <meta property="og:url" content="https://liyiheng.github.io/2018/05/golang%E4%B8%ADtime.time%E9%9B%B6%E5%80%BC%E7%9A%84json%E5%A4%84%E7%90%86/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="(≧▽≦)" />
   <meta name="twitter:title" content="golang中time.Time“零值”的JSON处理" />
   <meta name="twitter:description" content="场景
-
 数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。
 type MyStruct struct{
 	Time time.Time
-}">
+}
+">
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:card" content="summary" />
   <meta property="og:url" content="https://liyiheng.github.io/2018/05/golang%E4%B8%ADtime.time%E9%9B%B6%E5%80%BC%E7%9A%84json%E5%A4%84%E7%90%86/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="(≧▽≦)" />
 
-  <meta name="generator" content="Hugo 0.59.1" />
+  <meta name="generator" content="Hugo 0.66.0" />
   <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -288,28 +288,19 @@ type MyStruct struct{
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
         <h2 id="场景">场景</h2>
-
 <p>数据库为mongodb，驱动为mgo。从库中取数据后以json格式返给调用者。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">MyStruct</span> <span class="kd">struct</span><span class="p">{</span>
 	<span class="nx">Time</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
-<span class="p">}</span></code></pre></div>
-<p>Time的MarshalJSON实现是转化为RFC3339格式的时间，
+<span class="p">}</span>
+</code></pre></div><p>Time的MarshalJSON实现是转化为RFC3339格式的时间，
 若没有赋值，格式化后为0001-01-01T00:00:00Z, 对调用者极不友好</p>
-
 <p>需求：未赋值则返回<code>null</code></p>
-
-<h3 id="json-omitempty"><code>json:&quot;,omitempty&quot;</code></h3>
-
+<h3 id="jsonomitempty"><code>json:&quot;,omitempty&quot;</code></h3>
 <p>time.Time是结构体，不存在<code>0值</code>，此路不通</p>
-
-<h3 id="换-time-time-为-time-time">换<code>time.Time</code>为<code>*time.Time</code></h3>
-
+<h3 id="换timetime为timetime">换<code>time.Time</code>为<code>*time.Time</code></h3>
 <p>指向0值的指针不是空指针，数据库中现有数据肯定还是<code>0001-01-01T00:00:00Z</code></p>
-
 <p>姿势不优雅</p>
-
-<h3 id="实现-json-marshaler">实现<code>json.Marshaler</code></h3>
-
+<h3 id="实现jsonmarshaler">实现<code>json.Marshaler</code></h3>
 <p>如果时间是0, 就直接返回<code>null</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">CustomTime</span> <span class="kd">struct</span><span class="p">{</span>
 	<span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>
@@ -321,15 +312,12 @@ type MyStruct struct{
 		<span class="k">return</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;null&#34;</span><span class="p">),</span> <span class="kc">nil</span>
 	<span class="p">}</span>
 	<span class="k">return</span> <span class="nx">t</span><span class="p">.</span><span class="nx">Time</span><span class="p">.</span><span class="nf">MarshalJSON</span><span class="p">()</span>
-<span class="p">}</span></code></pre></div>
-<h3 id="大功告成">大功告成</h3>
+<span class="p">}</span>
 
+</code></pre></div><h3 id="大功告成">大功告成</h3>
 <p>其实并没有。经测试发现，没赋值的变成了null，有正常值的也变成了null</p>
-
 <p>因为bson非json, mgo解析数据时不会调用json.Unmarshaler，CustomTime不再是<code>time.Time</code></p>
-
 <p>解决：</p>
-
 <p>实现<code>bson.Getter</code>和<code>bson.Setter</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="nx">CustomTime</span><span class="p">)</span> <span class="nf">GetBSON</span><span class="p">()</span> <span class="p">(</span><span class="kd">interface</span><span class="p">{},</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
 	<span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">Time</span><span class="p">.</span><span class="nf">IsZero</span><span class="p">()</span> <span class="p">{</span>
@@ -345,7 +333,9 @@ type MyStruct struct{
 	<span class="p">}</span>
 	<span class="nx">t</span><span class="p">.</span><span class="nx">Time</span> <span class="p">=</span> <span class="nx">tm</span>
 	<span class="k">return</span> <span class="kc">nil</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span>
+
+</code></pre></div>
 
         
 
@@ -393,7 +383,7 @@ type MyStruct struct{
 
           &nbsp;&bull;&nbsp;&copy;
           
-            2019
+            2020
           
 
           
@@ -403,7 +393,7 @@ type MyStruct struct{
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="http://gohugo.io">Hugo v0.66.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>

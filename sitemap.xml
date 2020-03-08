@@ -4,7 +4,27 @@
   
   <url>
     <loc>https://liyiheng.github.io/blog/</loc>
-    <lastmod>2019-04-28T00:00:00+00:00</lastmod>
+    <lastmod>2020-03-07T11:44:44+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://liyiheng.github.io/blog/2020/03/6.824-lab2-%E6%80%BB%E7%BB%93/</loc>
+    <lastmod>2020-03-07T11:44:44+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://liyiheng.github.io/blog/post/</loc>
+    <lastmod>2020-03-07T11:44:44+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://liyiheng.github.io/blog/tags/rust/</loc>
+    <lastmod>2020-03-07T11:44:44+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://liyiheng.github.io/blog/tags/</loc>
+    <lastmod>2020-03-07T11:44:44+08:00</lastmod>
   </url>
   
   <url>
@@ -18,22 +38,7 @@
   </url>
   
   <url>
-    <loc>https://liyiheng.github.io/blog/post/</loc>
-    <lastmod>2019-04-28T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://liyiheng.github.io/blog/tags/rust/</loc>
-    <lastmod>2019-04-28T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://liyiheng.github.io/blog/categories/rust/</loc>
-    <lastmod>2019-04-28T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://liyiheng.github.io/blog/tags/</loc>
     <lastmod>2019-04-28T00:00:00+00:00</lastmod>
   </url>
   
@@ -63,12 +68,12 @@
   </url>
   
   <url>
-    <loc>https://liyiheng.github.io/blog/categories/golang/</loc>
+    <loc>https://liyiheng.github.io/blog/tags/golang/</loc>
     <lastmod>2017-11-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://liyiheng.github.io/blog/tags/golang/</loc>
+    <loc>https://liyiheng.github.io/blog/categories/golang/</loc>
     <lastmod>2017-11-13T00:00:00+00:00</lastmod>
   </url>
   
@@ -148,12 +153,12 @@
   </url>
   
   <url>
-    <loc>https://liyiheng.github.io/blog/categories/java/</loc>
+    <loc>https://liyiheng.github.io/blog/tags/java/</loc>
     <lastmod>2017-03-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://liyiheng.github.io/blog/tags/java/</loc>
+    <loc>https://liyiheng.github.io/blog/categories/java/</loc>
     <lastmod>2017-03-04T00:00:00+00:00</lastmod>
   </url>
   
@@ -168,12 +173,12 @@
   </url>
   
   <url>
-    <loc>https://liyiheng.github.io/blog/categories/android/</loc>
+    <loc>https://liyiheng.github.io/blog/tags/android/</loc>
     <lastmod>2017-03-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://liyiheng.github.io/blog/tags/android/</loc>
+    <loc>https://liyiheng.github.io/blog/categories/android/</loc>
     <lastmod>2017-03-01T00:00:00+00:00</lastmod>
   </url>
   

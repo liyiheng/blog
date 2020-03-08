@@ -13,16 +13,13 @@
   <meta name="description" content="
 原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
 
-
 假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
   <meta property="og:description" content="
 原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
 
-
 假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
   <meta name="twitter:description" content="
 原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
-
 
 假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
   <meta name="author" content="liyiheng"/><script type="application/ld+json">
@@ -98,7 +95,6 @@
 <meta property="og:description" content="
 原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
 
-
 假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
 <meta property="og:url" content="https://liyiheng.github.io/2017/09/%E8%AF%91%E5%9C%A8go%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E4%B8%AD%E5%B5%8C%E5%85%A5%E6%95%B0%E6%8D%AE/" />
 <meta property="og:type" content="website" />
@@ -107,7 +103,6 @@
   <meta name="twitter:description" content="
 原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
 
-
 假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:card" content="summary" />
@@ -115,7 +110,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="(≧▽≦)" />
 
-  <meta name="generator" content="Hugo 0.59.1" />
+  <meta name="generator" content="Hugo 0.66.0" />
   <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -285,13 +280,9 @@
         <blockquote>
 <p>原文地址 <a href="https://scene-si.org/2017/08/22/embedding-data-in-go-executables/">https://scene-si.org/2017/08/22/embedding-data-in-go-executables/</a></p>
 </blockquote>
-
 <p>假如你已经关注了我一段时间，应该知道我正在开发<a href="https://github.com/titpetric/pendulum">Pendulum编辑器</a>作为每天至少编码一小时的<a href="http://100daysofcode.com/">#100DaysOfCode</a>挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。</p>
-
 <p>实际上这篇文章就是用它写的。它由go后端和VueJS前端组成。我希望它易于使用并提供包含一切的单个可执行文件，因此用户不需要下载安装器并解压文件。我需要找个能把所有东西打包到一块的方案。我决定用<a href="https://github.com/jteeuwen/go-bindata">go-bindata</a>以代码生成的方式来把所有数据通过 go build 添加到可执行文件中。</p>
-
 <h3 id="代码生成">代码生成？</h3>
-
 <p>当然这很简单。例如 go-bindata 工具可以帮我们从<code>public_html</code>目录生成对应的 .go 文件。这对我的应用场景来说是极好的。不过为什么要用bash脚本或者makefile来生成它呢？因为这样我们在执行<code>go build</code>之前就只需要通过执行一下<code>go generate</code>利用go的代码生成工具了
 如果还不熟悉代码生成，你只需要在你代码的某处加上简单的注释，用<code>main.go</code>举个例子：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
@@ -299,8 +290,8 @@
 <span class="c1">//go:generate echo &#34;Hello world&#34;
 </span><span class="c1"></span>
 <span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-<span class="p">}</span></code></pre></div>
-<p>执行<code>go generate</code>时，可以看到输出了 “Hello world” 。这不是你用 go generate 生成代码的实际需求。你在<code>//go:generate</code>后面写的一切都会执行。如果你想的话，甚至可以执行<code>go build</code>。</p>
+<span class="p">}</span>
+</code></pre></div><p>执行<code>go generate</code>时，可以看到输出了 “Hello world” 。这不是你用 go generate 生成代码的实际需求。你在<code>//go:generate</code>后面写的一切都会执行。如果你想的话，甚至可以执行<code>go build</code>。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
 
 <span class="c1">//go:generate echo &#34;Hello world&#34;
@@ -308,19 +299,16 @@
 </span><span class="c1"></span>
 <span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
     <span class="nb">println</span><span class="p">(</span><span class="s">&#34;Hello world from Go&#34;</span><span class="p">)</span>
-<span class="p">}</span></code></pre></div>
-<p>运行这个会有预期的输出：</p>
+<span class="p">}</span>
+</code></pre></div><p>运行这个会有预期的输出：</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">%go generate
 Hello world
-Hello world from Go</code></pre></div>
-<p>旗开得胜！go generate 很有意思。Node程序通过<code>babel</code>来使Node ES5运行时兼容ES6/ES7的语法。人们正尝试用类似的途径为go提供超出语言目前功能的特性。</p>
-
+Hello world from Go
+</code></pre></div><p>旗开得胜！go generate 很有意思。Node程序通过<code>babel</code>来使Node ES5运行时兼容ES6/ES7的语法。人们正尝试用类似的途径为go提供超出语言目前功能的特性。</p>
 <p>例如，<a href="https://github.com/cheekybits/genny">genny</a>主要针对强类型代码的生成，因此不再需要手动复制粘贴。不过<a href="http://havelang.org/">Have</a>这样的项目更接近Babel对Node的处理&ndash;提供转换到go的语言。目前我还不清楚这方面更有吸引力的其他尝试。不过关于Go2及泛型的讨论似乎比较有趣。</p>
-
 <p>这对我们的应用场景来说略显枯燥，我们只是要把一些数据打包到程序中。那么闲话休提，书归正传：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="o">//</span><span class="k">go</span><span class="p">:</span><span class="nx">generate</span> <span class="k">go</span><span class="o">-</span><span class="nx">bindata</span> <span class="o">-</span><span class="nx">prefix</span> <span class="nx">front</span><span class="o">/</span><span class="nx">src</span> <span class="o">-</span><span class="nx">o</span> <span class="nx">assets</span><span class="o">/</span><span class="nx">bindata</span><span class="p">.</span><span class="k">go</span> <span class="o">-</span><span class="nx">pkg</span> <span class="nx">assets</span> <span class="o">-</span><span class="nx">nomemcopy</span> <span class="nx">front</span><span class="o">/</span><span class="nx">src</span><span class="o">/</span><span class="nx">dist</span><span class="o">/...</span></code></pre></div>
-<p>这一行略长，就把它拆分来看：</p>
-
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">//go:generate go-bindata -prefix front/src -o assets/bindata.go -pkg assets -nomemcopy front/src/dist/...
+</span></code></pre></div><p>这一行略长，就把它拆分来看：</p>
 <ul>
 <li><code>//go:generate</code> - 为<code>go generate</code>作提示</li>
 <li><code>go-bindata</code> - 要执行的主命令</li>
@@ -330,16 +318,13 @@ Hello world from Go</code></pre></div>
 <li><code>-nomemcopy</code> - 对<a href="https://github.com/jteeuwen/go-bindata#lower-memory-footprint">内存占用</a>的优化</li>
 <li><code>front/src/dist/...</code> - 要打包的地方</li>
 </ul>
-
 <p>这会在应用目录下创建一个可以简单的用<code>app/assets</code>导入的<code>assets</code>包，其中<code>app</code>对应的是应用目录。</p>
-
 <h3 id="通过http提供嵌入的文件服务">通过HTTP提供嵌入的文件服务</h3>
-
 <p>这稍微有点复杂。不过看一下文档之后就简单了。如果要基于本地文件提供服务，你大致需要下面这几行类似的代码：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">folder</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">Dir</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">)</span>
 <span class="nx">server</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">FileServer</span><span class="p">(</span><span class="nx">folder</span><span class="p">)</span>
-<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">server</span><span class="p">)</span></code></pre></div>
-<p>实际上，<a href="https://github.com/elazarl/go-bindata-assetfs">go-bindata-assetfs</a>包已经提供了一个http.FileServer实现。这个用起来就够简单了:</p>
+<span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">server</span><span class="p">)</span>
+</code></pre></div><p>实际上，<a href="https://github.com/elazarl/go-bindata-assetfs">go-bindata-assetfs</a>包已经提供了一个http.FileServer实现。这个用起来就够简单了:</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">import</span> <span class="s">&#34;github.com/elazarl/go-bindata-assetfs&#34;</span>
 <span class="kn">import</span> <span class="s">&#34;app/assets&#34;</span>
 <span class="c1">// ...
@@ -353,9 +338,8 @@ Hello world from Go</code></pre></div>
     <span class="p">}</span>
     <span class="nx">server</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">FileServer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">files</span><span class="p">)</span>
     <span class="c1">// ...
-</span><span class="c1"></span><span class="p">}</span></code></pre></div>
-<p>还有一个小问题。我用的是启用了pushHistory的VueJS应用。这就意味着，用户使用时会看到没有释伴符(哈希，#)的类似<code>/blog/about.md</code>的普通链接。这些需要被应用处理的链接内容在asset中并不存在。</p>
-
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>还有一个小问题。我用的是启用了pushHistory的VueJS应用。这就意味着，用户使用时会看到没有释伴符(哈希，#)的类似<code>/blog/about.md</code>的普通链接。这些需要被应用处理的链接内容在asset中并不存在。</p>
 <p>这个问题也不难解决。<code>assetfs.AssetFS</code>结构体有一个<code>AssetsInfo</code>方法（相当于<code>os.Stat</code>）和一个<code>Asset</code>方法（有点像<code>ioutil.ReadFile</code>）。这使检查一个文件是否存在于asset，若不存在则输出另一个文件成为可能：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Serves index.html in case the requested file isn&#39;t found
 </span><span class="c1">// (or some other os.Stat error)
@@ -374,25 +358,19 @@ Hello world from Go</code></pre></div>
         <span class="p">}</span>
         <span class="nx">serve</span><span class="p">.</span><span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
     <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
-<p>如果找到了文件，就用预置的ServeHTTP方法取代我自己的实现。采用这种方法只需要对我们之前定义的handler稍作调整：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nf">serveIndex</span><span class="p">(</span><span class="nx">server</span><span class="p">,</span> <span class="nx">assets</span><span class="p">))</span></code></pre></div>
-<p><code>serveIndex</code>函数返回一个<code>http.HandlerFunc</code>,这行是相应的修改。这就提供了你用 go generate 和 go-bindata 添加到应用中的数据服务的完整实现。如果你想跳过<code>//go:generate</code>环节把这些放到CI脚本中也是可以的。</p>
-
+<span class="p">}</span>
+</code></pre></div><p>如果找到了文件，就用预置的ServeHTTP方法取代我自己的实现。采用这种方法只需要对我们之前定义的handler稍作调整：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nf">serveIndex</span><span class="p">(</span><span class="nx">server</span><span class="p">,</span> <span class="nx">assets</span><span class="p">))</span>
+</code></pre></div><p><code>serveIndex</code>函数返回一个<code>http.HandlerFunc</code>,这行是相应的修改。这就提供了你用 go generate 和 go-bindata 添加到应用中的数据服务的完整实现。如果你想跳过<code>//go:generate</code>环节把这些放到CI脚本中也是可以的。</p>
 <p>鉴于此我实现了<a href="https://github.com/titpetric/pendulum">Pendulum</a>的单个可执行发布版本。可以从<a href="https://github.com/titpetric/pendulum/releases">GitHub发布页</a>获取并尝试。</p>
-
 <p><em>编辑：改进serveIndex示例 <a href="https://www.reddit.com/r/golang/comments/6vcl8u/embedding_data_in_go_executables_tit_petric/dm0eauu/">感谢@Rdihipone</a></em></p>
-
 <h3 id="当你看到了这里">当你看到了这里&hellip;</h3>
-
 <p>要是你能买本我的书定是极好的：</p>
-
 <ul>
 <li><a href="https://leanpub.com/api-foundations">API Foundations in Go</a></li>
 <li><a href="https://leanpub.com/12fa-docker-golang">12 Factor Apps with Docker and Go</a></li>
 <li><a href="https://leanpub.com/saas-handbook">The SaaS Handbook (work in progress)</a></li>
 </ul>
-
 <p>I promise you&rsquo;ll learn a lot more if you buy one. Buying a copy supports me writing more about similar topics. Say thank you and buy my books.
 Feel free to <a href="black@scene-si.org">send me an email</a> if you want to book my time for consultancy/freelance services. I&rsquo;m great at APIs, Go, Docker, VueJS and scaling services, <a href="https://scene-si.org/about">among many other things</a>.</p>
 
@@ -448,7 +426,7 @@ Feel free to <a href="black@scene-si.org">send me an email</a> if you want to bo
 
           &nbsp;&bull;&nbsp;&copy;
           
-            2019
+            2020
           
 
           
@@ -458,7 +436,7 @@ Feel free to <a href="black@scene-si.org">send me an email</a> if you want to bo
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="http://gohugo.io">Hugo v0.66.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>

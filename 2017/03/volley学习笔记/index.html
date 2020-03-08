@@ -11,13 +11,10 @@
   <meta property="og:title" content="Volley学习笔记" />
   <meta name="twitter:title" content="Volley学习笔记" />
   <meta name="description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
-
 主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
   <meta property="og:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
-
 主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
   <meta name="twitter:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
-
 主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
   <meta name="author" content="liyiheng"/><script type="application/ld+json">
 {
@@ -69,7 +66,7 @@
   "headline": "Volley学习笔记",
   "description" : "虽然更倾向于retrofit \x2b okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧\n主要是分析Volley的部分实现，不再涉及具体使用和二次封装\n",
   "inLanguage" : "zh-cn",
-  "wordCount":  599 ,
+  "wordCount":  598 ,
   "datePublished" : "2017-03-01T00:00:00",
   "dateModified" : "2017-03-01T00:00:00",
   "image" : "https:\/\/liyiheng.github.io\/blog\/",
@@ -90,14 +87,12 @@
 
 <meta property="og:title" content="Volley学习笔记" />
 <meta property="og:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
-
 主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
 <meta property="og:url" content="https://liyiheng.github.io/2017/03/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="(≧▽≦)" />
   <meta name="twitter:title" content="Volley学习笔记" />
   <meta name="twitter:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
-
 主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:card" content="summary" />
@@ -105,7 +100,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="(≧▽≦)" />
 
-  <meta name="generator" content="Hugo 0.59.1" />
+  <meta name="generator" content="Hugo 0.66.0" />
   <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -273,191 +268,184 @@
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
         <p>虽然更倾向于retrofit + okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒<a href="https://github.com/google/volley">Volley的源码</a>吧</p>
-
 <p>主要是分析Volley的部分实现，不再涉及<a href="https://github.com/liyiheng/EasyVolley">具体使用和二次封装</a></p>
-
-<h3 id="volley-java">Volley.java</h3>
-
+<h3 id="volleyjava">Volley.java</h3>
 <p><code>Volley.java</code>用来创建 <code>RequestQueue</code>，有两个用来重载静态方法和一个常量（默认的磁盘缓存目录），核心代码如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">public static RequestQueue newRequestQueue</span><span class="p">(</span><span class="err">Context context</span><span class="p">,</span> <span class="err">HttpStack stack</span><span class="p">)</span> <span class="p">{</span>
-    <span class="err">File cacheDir </span><span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="na">getCacheDir</span><span class="p">(),</span> <span class="n">DEFAULT_CACHE_DIR</span><span class="p">);</span>
-    <span class="err">String userAgent </span><span class="o">=</span> <span class="s">&#34;volley/0&#34;</span><span class="p">;</span>
-    <span class="k">try</span> <span class="p">{</span>
-        <span class="err">String packageName </span><span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getPackageName</span><span class="p">();</span>
-        <span class="err">PackageInfo info </span><span class="o">=</span> <span class="n">context</span><span class="p">.</span><span class="na">getPackageManager</span><span class="p">().</span><span class="na">getPackageInfo</span><span class="p">(</span><span class="n">packageName</span><span class="p">,</span> <span class="n">0</span><span class="p">);</span>
-        <span class="n">userAgent</span> <span class="o">=</span> <span class="n">packageName</span> <span class="o">+</span> <span class="s">&#34;/&#34;</span> <span class="o">+</span> <span class="n">info</span><span class="p">.</span><span class="na">versionCode</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="err">NameNotFoundException ignored</span><span class="p">)</span> <span class="p">{</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">stack</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">Build</span><span class="p">.</span><span class="na">VERSION</span><span class="p">.</span><span class="na">SDK_INT</span> <span class="o">&gt;=</span> <span class="n">9</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">stack</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HurlStack</span><span class="p">();</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="n">stack</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpClientStack</span><span class="p">(</span><span class="n">AndroidHttpClient</span><span class="p">.</span><span class="na">newInstance</span><span class="p">(</span><span class="n">userAgent</span><span class="p">));</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="err">Network network </span><span class="o">=</span> <span class="k">new</span> <span class="n">BasicNetwork</span><span class="p">(</span><span class="n">stack</span><span class="p">);</span>
-    <span class="err">RequestQueue queue </span><span class="o">=</span> <span class="k">new</span> <span class="n">RequestQueue</span><span class="p">(</span><span class="k">new</span> <span class="n">DiskBasedCache</span><span class="p">(</span><span class="n">cacheDir</span><span class="p">),</span> <span class="n">network</span><span class="p">);</span>
-    <span class="n">queue</span><span class="p">.</span><span class="na">start</span><span class="p">();</span>
-    <span class="k">return</span> <span class="n">queue</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
-<ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="n">RequestQueue</span> <span class="nf">newRequestQueue</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">HttpStack</span> <span class="n">stack</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">File</span> <span class="n">cacheDir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getCacheDir</span><span class="o">(),</span> <span class="n">DEFAULT_CACHE_DIR</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">userAgent</span> <span class="o">=</span> <span class="s">&#34;volley/0&#34;</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">packageName</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getPackageName</span><span class="o">();</span>
+        <span class="n">PackageInfo</span> <span class="n">info</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getPackageManager</span><span class="o">().</span><span class="na">getPackageInfo</span><span class="o">(</span><span class="n">packageName</span><span class="o">,</span> <span class="n">0</span><span class="o">);</span>
+        <span class="n">userAgent</span> <span class="o">=</span> <span class="n">packageName</span> <span class="o">+</span> <span class="s">&#34;/&#34;</span> <span class="o">+</span> <span class="n">info</span><span class="o">.</span><span class="na">versionCode</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">NameNotFoundException</span> <span class="n">ignored</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">stack</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">Build</span><span class="o">.</span><span class="na">VERSION</span><span class="o">.</span><span class="na">SDK_INT</span> <span class="o">&gt;=</span> <span class="n">9</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">stack</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HurlStack</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">stack</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HttpClientStack</span><span class="o">(</span><span class="n">AndroidHttpClient</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">userAgent</span><span class="o">));</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="n">Network</span> <span class="n">network</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BasicNetwork</span><span class="o">(</span><span class="n">stack</span><span class="o">);</span>
+    <span class="n">RequestQueue</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RequestQueue</span><span class="o">(</span><span class="k">new</span> <span class="n">DiskBasedCache</span><span class="o">(</span><span class="n">cacheDir</span><span class="o">),</span> <span class="n">network</span><span class="o">);</span>
+    <span class="n">queue</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">return</span> <span class="n">queue</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><ul>
 <li>1.创建缓存目录</li>
-<li>2.生成内容为<code>包名/版本号</code>的UA，默认为&rdquo;volley/0&rdquo;</li>
+<li>2.生成内容为<code>包名/版本号</code>的UA，默认为&quot;volley/0&rdquo;</li>
 <li>3.如果未指定stack，在api9以上的设备上使用基于HttpURLConnection的stack，更旧是设备上则是用HttpClient实现的stack。传入的HttpStack为<code>接口类型</code>，因此可以使用自己的HttpStack实现（如okhttp）。</li>
 <li>4.创建BasicNetwork对象和DiskBasedCache对象</li>
 <li>5.通过4中的对象构造一个RequestQueue，并调用start()方法后将其返回</li>
 </ul>
-
-<h3 id="requestqueue-java">RequestQueue.java</h3>
-
+<h3 id="requestqueuejava">RequestQueue.java</h3>
 <p>RequestQueue有一个缓存dispatcher和一组网络dispatcher，其数量（线程池大小）可指定，默认为4.</p>
-
-<p>stop()方法将所有dispatcher停止<br></p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">public void </span><span class="n">stop</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">mCacheDispatcher</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">mCacheDispatcher</span><span class="p">.</span><span class="na">quit</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="k">for</span> <span class="p">(</span><span class="err">int i </span><span class="o">=</span> <span class="n">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">mDispatchers</span><span class="p">.</span><span class="na">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">mDispatchers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">mDispatchers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="na">quit</span><span class="p">();</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
-<p>start()方法则是先调用stop方法，再创建每一个dispatcher并调用其start方法（dispatcher继承Thread）</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="err">public void </span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">stop</span><span class="p">();</span>  <span class="c1">// Make sure any currently running dispatchers are stopped.
+<p>stop()方法将所有dispatcher停止<!-- raw HTML omitted --></p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">mCacheDispatcher</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">mCacheDispatcher</span><span class="o">.</span><span class="na">quit</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">mDispatchers</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mDispatchers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">mDispatchers</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">quit</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>start()方法则是先调用stop方法，再创建每一个dispatcher并调用其start方法（dispatcher继承Thread）</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">start</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">stop</span><span class="o">();</span>  <span class="c1">// Make sure any currently running dispatchers are stopped.
 </span><span class="c1"></span>    <span class="c1">// Create the cache dispatcher and start it.
-</span><span class="c1"></span>    <span class="n">mCacheDispatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CacheDispatcher</span><span class="p">(</span><span class="n">mCacheQueue</span><span class="p">,</span> <span class="n">mNetworkQueue</span><span class="p">,</span> <span class="n">mCache</span><span class="p">,</span> <span class="n">mDelivery</span><span class="p">);</span>
-    <span class="n">mCacheDispatcher</span><span class="p">.</span><span class="na">start</span><span class="p">();</span>
-    <span class="k">for</span> <span class="p">(</span><span class="err">int i </span><span class="o">=</span> <span class="n">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">mDispatchers</span><span class="p">.</span><span class="na">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="err">NetworkDispatcher networkDispatcher </span><span class="o">=</span> <span class="k">new</span> <span class="n">NetworkDispatcher</span><span class="p">(</span><span class="n">mNetworkQueue</span><span class="p">,</span> <span class="n">mNetwork</span><span class="p">,</span>
-                <span class="n">mCache</span><span class="p">,</span> <span class="n">mDelivery</span><span class="p">);</span>
-        <span class="n">mDispatchers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">networkDispatcher</span><span class="p">;</span>
-        <span class="n">networkDispatcher</span><span class="p">.</span><span class="na">start</span><span class="p">();</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
-<p>add()方法将请求添加至队列。
- 如果不使用缓存，则直接添加至网络队列并返回，不再使用缓存队列；
- 使用缓存时，则先根据cacheKey判断是否有正在等待的相同请求，如果有就加入该key对应的Queue排队，没有则添加到缓存队列并将key对应的Queue置空</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="o">&lt;</span><span class="err">T&gt; Request</span><span class="o">&lt;</span><span class="err">T&gt; add</span><span class="p">(</span><span class="err">Request&lt;T&gt; request</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="c1"></span>    <span class="n">mCacheDispatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CacheDispatcher</span><span class="o">(</span><span class="n">mCacheQueue</span><span class="o">,</span> <span class="n">mNetworkQueue</span><span class="o">,</span> <span class="n">mCache</span><span class="o">,</span> <span class="n">mDelivery</span><span class="o">);</span>
+    <span class="n">mCacheDispatcher</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">mDispatchers</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="n">NetworkDispatcher</span> <span class="n">networkDispatcher</span> <span class="o">=</span> <span class="k">new</span> <span class="n">NetworkDispatcher</span><span class="o">(</span><span class="n">mNetworkQueue</span><span class="o">,</span> <span class="n">mNetwork</span><span class="o">,</span>
+                <span class="n">mCache</span><span class="o">,</span> <span class="n">mDelivery</span><span class="o">);</span>
+        <span class="n">mDispatchers</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">networkDispatcher</span><span class="o">;</span>
+        <span class="n">networkDispatcher</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>add()方法将请求添加至队列。
+如果不使用缓存，则直接添加至网络队列并返回，不再使用缓存队列；
+使用缓存时，则先根据cacheKey判断是否有正在等待的相同请求，如果有就加入该key对应的Queue排队，没有则添加到缓存队列并将key对应的Queue置空</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">Request</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">add</span><span class="o">(</span><span class="n">Request</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// 将该请求标记为属于当前队列，并加入mCurrentRequests
-</span><span class="c1"></span>    <span class="n">request</span><span class="p">.</span><span class="na">setRequestQueue</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-    <span class="kd">synchronized</span> <span class="p">(</span><span class="n">mCurrentRequests</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">mCurrentRequests</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-    <span class="p">}</span>
+</span><span class="c1"></span>    <span class="n">request</span><span class="o">.</span><span class="na">setRequestQueue</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+    <span class="kd">synchronized</span> <span class="o">(</span><span class="n">mCurrentRequests</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">mCurrentRequests</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+    <span class="o">}</span>
     <span class="c1">// Process requests in the order they are added.
-</span><span class="c1"></span>    <span class="n">request</span><span class="p">.</span><span class="na">setSequence</span><span class="p">(</span><span class="n">getSequenceNumber</span><span class="p">());</span>
-    <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;add-to-queue&#34;</span><span class="p">);</span>
+</span><span class="c1"></span>    <span class="n">request</span><span class="o">.</span><span class="na">setSequence</span><span class="o">(</span><span class="n">getSequenceNumber</span><span class="o">());</span>
+    <span class="n">request</span><span class="o">.</span><span class="na">addMarker</span><span class="o">(</span><span class="s">&#34;add-to-queue&#34;</span><span class="o">);</span>
     <span class="c1">// If the request is uncacheable, skip the cache queue and go straight to the network.
-</span><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">request</span><span class="p">.</span><span class="na">shouldCache</span><span class="p">())</span> <span class="p">{</span>
-        <span class="n">mNetworkQueue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-        <span class="k">return</span> <span class="n">request</span><span class="p">;</span>
-    <span class="p">}</span>
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(!</span><span class="n">request</span><span class="o">.</span><span class="na">shouldCache</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">mNetworkQueue</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">;</span>
+    <span class="o">}</span>
     <span class="c1">// Insert request into stage if there&#39;s already a request with the same cache key in flight.
-</span><span class="c1"></span>    <span class="kd">synchronized</span> <span class="p">(</span><span class="n">mWaitingRequests</span><span class="p">)</span> <span class="p">{</span>
-        <span class="err">String cacheKey </span><span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="na">getCacheKey</span><span class="p">();</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">mWaitingRequests</span><span class="p">.</span><span class="na">containsKey</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="c1"></span>    <span class="kd">synchronized</span> <span class="o">(</span><span class="n">mWaitingRequests</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">cacheKey</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getCacheKey</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">mWaitingRequests</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">cacheKey</span><span class="o">))</span> <span class="o">{</span>
             <span class="c1">// There is already a request in flight. Queue up.
-</span><span class="c1"></span>            <span class="n">Queue</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">stagedRequests</span> <span class="o">=</span> <span class="n">mWaitingRequests</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">);</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">stagedRequests</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">stagedRequests</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&lt;?&gt;&gt;</span><span class="p">();</span>
-            <span class="p">}</span>
-            <span class="n">stagedRequests</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-            <span class="n">mWaitingRequests</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">,</span> <span class="n">stagedRequests</span><span class="p">);</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">VolleyLog</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">VolleyLog</span><span class="p">.</span><span class="na">v</span><span class="p">(</span><span class="s">&#34;Request for cacheKey=%s is in flight, putting on hold.&#34;</span><span class="p">,</span> <span class="n">cacheKey</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class="c1"></span>            <span class="n">Queue</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">stagedRequests</span> <span class="o">=</span> <span class="n">mWaitingRequests</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">cacheKey</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">stagedRequests</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">stagedRequests</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LinkedList</span><span class="o">&lt;</span><span class="n">Request</span><span class="o">&lt;?&gt;&gt;();</span>
+            <span class="o">}</span>
+            <span class="n">stagedRequests</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+            <span class="n">mWaitingRequests</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">cacheKey</span><span class="o">,</span> <span class="n">stagedRequests</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">VolleyLog</span><span class="o">.</span><span class="na">DEBUG</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">VolleyLog</span><span class="o">.</span><span class="na">v</span><span class="o">(</span><span class="s">&#34;Request for cacheKey=%s is in flight, putting on hold.&#34;</span><span class="o">,</span> <span class="n">cacheKey</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
             <span class="c1">// Insert &#39;null&#39; queue for this cacheKey, indicating there is now a request in
 </span><span class="c1"></span>            <span class="c1">// flight.
-</span><span class="c1"></span>            <span class="n">mWaitingRequests</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">cacheKey</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
-            <span class="n">mCacheQueue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">request</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
-<h3 id="dispatcher">Dispatcher</h3>
-
+</span><span class="c1"></span>            <span class="n">mWaitingRequests</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">cacheKey</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+            <span class="n">mCacheQueue</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="dispatcher">Dispatcher</h3>
 <p>请求添加到队列后，由Dispatcher处理。NetworkDispatcher和CacheDispatcher都是Thread的子类，主要逻辑在run()方法</p>
-
 <ul>
-<li><p>NetworkDispatcher.java核心代码如下</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">                <span class="c1">// ...
-</span><span class="c1"></span>                <span class="c1">// ...
-</span><span class="c1"></span>                <span class="c1">// Take a request from the queue.
-</span><span class="c1"></span>                <span class="c1">// 此处mQueue的类型为BlockingQueue&lt;Request&lt;?&gt;&gt;，
-</span><span class="c1"></span>                <span class="c1">// take()方法有可能阻塞，类似与Linux下的pipe，
-</span><span class="c1"></span>                <span class="c1">// Looper.loop()方法中也有同样的用法(生产者消费者模型)
-</span><span class="c1"></span>                <span class="n">request</span> <span class="o">=</span> <span class="n">mQueue</span><span class="p">.</span><span class="na">take</span><span class="p">();</span>
-                <span class="c1">// ...
-</span><span class="c1"></span>                <span class="c1">// ...
-</span><span class="c1"></span>                <span class="c1">// Perform the network request.
-</span><span class="c1"></span>                <span class="err">NetworkResponse networkResponse </span><span class="o">=</span> <span class="n">mNetwork</span><span class="p">.</span><span class="na">performRequest</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-                <span class="c1">// ...
-</span><span class="c1"></span>                <span class="c1">// ...
-</span><span class="c1"></span>                <span class="c1">// Parse the response here on the worker thread.
-</span><span class="c1"></span>                <span class="n">Response</span><span class="o">&lt;?&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="na">parseNetworkResponse</span><span class="p">(</span><span class="n">networkResponse</span><span class="p">);</span>
-                <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;network-parse-complete&#34;</span><span class="p">);</span>
-                <span class="c1">// Write to cache if applicable.
-</span><span class="c1"></span>                <span class="c1">// TODO: Only update cache metadata instead of entire record for 304s.
-</span><span class="c1"></span>                <span class="k">if</span> <span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">shouldCache</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">response</span><span class="p">.</span><span class="na">cacheEntry</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="n">mCache</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getCacheKey</span><span class="p">(),</span> <span class="n">response</span><span class="p">.</span><span class="na">cacheEntry</span><span class="p">);</span>
-                    <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;network-cache-written&#34;</span><span class="p">);</span>
-                <span class="p">}</span>
-                <span class="c1">// Post the response back.
-</span><span class="c1"></span>                <span class="n">request</span><span class="p">.</span><span class="na">markDelivered</span><span class="p">();</span>
-                <span class="c1">// mDelivery通过executor和handler将结果发出，由Looper线程处理，通常是主线程
-</span><span class="c1"></span>                <span class="n">mDelivery</span><span class="p">.</span><span class="na">postResponse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span></code></pre></div></li>
-
-<li><p>CacheDispatcher.java核心代码如下
-与NetworkDispatcher的实现类似，但CacheDispatcher需要对缓存数据进行判断，是否存在、是否过期、是否需要刷新等。根据判断结果决定是否需要将请求加入网络队列交给NetworkDispatcher处理</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">            <span class="c1">// Get a request from the cache triage queue, blocking until
-</span><span class="c1"></span>            <span class="c1">// at least one is available.
-</span><span class="c1"></span>            <span class="err">final Request</span><span class="o">&lt;?&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">mCacheQueue</span><span class="p">.</span><span class="na">take</span><span class="p">();</span>
-            <span class="c1">// ...
-</span><span class="c1"></span>            <span class="c1">// ...
-</span><span class="c1"></span>            <span class="c1">// Attempt to retrieve this item from cache.
-</span><span class="c1"></span>            <span class="err">Cache.Entry entry </span><span class="o">=</span> <span class="n">mCache</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="na">getCacheKey</span><span class="p">());</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">entry</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;cache-miss&#34;</span><span class="p">);</span>
-                <span class="c1">// Cache miss; send off to the network dispatcher.
-</span><span class="c1"></span>                <span class="n">mNetworkQueue</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-                <span class="k">continue</span><span class="p">;</span>
-            <span class="p">}</span>
-            <span class="c1">// If it is completely expired, just send it to the network.
-</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="na">isExpired</span><span class="p">())</span> <span class="p">{</span>
-                <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;cache-hit-expired&#34;</span><span class="p">);</span>
-                <span class="n">request</span><span class="p">.</span><span class="na">setCacheEntry</span><span class="p">(</span><span class="n">entry</span><span class="p">);</span>
-                <span class="n">mNetworkQueue</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-                <span class="k">continue</span><span class="p">;</span>
-            <span class="p">}</span>
-            <span class="c1">// We have a cache hit; parse its data for delivery back to the request.
-</span><span class="c1"></span>            <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;cache-hit&#34;</span><span class="p">);</span>
-            <span class="n">Response</span><span class="o">&lt;?&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="na">parseNetworkResponse</span><span class="p">(</span>
-                    <span class="k">new</span> <span class="n">NetworkResponse</span><span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="na">data</span><span class="p">,</span> <span class="n">entry</span><span class="p">.</span><span class="na">responseHeaders</span><span class="p">));</span>
-            <span class="n">request</span><span class="p">.</span><span class="na">addMarker</span><span class="p">(</span><span class="s">&#34;cache-hit-parsed&#34;</span><span class="p">);</span>
-            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">entry</span><span class="p">.</span><span class="na">refreshNeeded</span><span class="p">())</span> <span class="p">{</span>
-                <span class="c1">// Completely unexpired cache hit. Just deliver the response.
-</span><span class="c1"></span>                <span class="n">mDelivery</span><span class="p">.</span><span class="na">postResponse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="c1">// Soft-expired cache hit. We can deliver the cached response,
-</span><span class="c1"></span>                <span class="c1">// but we need to also send the request to the network for
-</span><span class="c1"></span>                <span class="c1">// refreshing.
-</span><span class="c1"></span>                <span class="c1">// ...
-</span><span class="c1"></span>                <span class="c1">// ...
-</span><span class="c1"></span>                <span class="n">mDelivery</span><span class="p">.</span><span class="na">postResponse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="k">new</span> <span class="n">Runnable</span><span class="p">()</span> <span class="p">{</span>
-                    <span class="nd">@Override</span>
-                    <span class="err">public void </span><span class="n">run</span><span class="p">()</span> <span class="p">{</span>
-                        <span class="k">try</span> <span class="p">{</span>
-                            <span class="n">mNetworkQueue</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">request</span><span class="p">);</span>
-                        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="err">InterruptedException e</span><span class="p">)</span> <span class="p">{</span>
-                            <span class="c1">// Not much we can do about this.
-</span><span class="c1"></span>                        <span class="p">}</span>
-                    <span class="p">}</span>
-                <span class="p">});</span>
-            <span class="p">}</span></code></pre></div>
-<h3 id="嗯-还没写完">嗯，还没写完</h3></li>
+<li>NetworkDispatcher.java核心代码如下</li>
 </ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">                    <span class="c1">// ...
+</span><span class="c1"></span>                    <span class="c1">// ...
+</span><span class="c1"></span>                    <span class="c1">// Take a request from the queue.
+</span><span class="c1"></span>                    <span class="c1">// 此处mQueue的类型为BlockingQueue&lt;Request&lt;?&gt;&gt;，
+</span><span class="c1"></span>                    <span class="c1">// take()方法有可能阻塞，类似与Linux下的pipe，
+</span><span class="c1"></span>                    <span class="c1">// Looper.loop()方法中也有同样的用法(生产者消费者模型)
+</span><span class="c1"></span>                    <span class="n">request</span> <span class="o">=</span> <span class="n">mQueue</span><span class="o">.</span><span class="na">take</span><span class="o">();</span>
+                    <span class="c1">// ...
+</span><span class="c1"></span>                    <span class="c1">// ...
+</span><span class="c1"></span>                    <span class="c1">// Perform the network request.
+</span><span class="c1"></span>                    <span class="n">NetworkResponse</span> <span class="n">networkResponse</span> <span class="o">=</span> <span class="n">mNetwork</span><span class="o">.</span><span class="na">performRequest</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+                    <span class="c1">// ...
+</span><span class="c1"></span>                    <span class="c1">// ...
+</span><span class="c1"></span>                    <span class="c1">// Parse the response here on the worker thread.
+</span><span class="c1"></span>                    <span class="n">Response</span><span class="o">&lt;?&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">parseNetworkResponse</span><span class="o">(</span><span class="n">networkResponse</span><span class="o">);</span>
+                    <span class="n">request</span><span class="o">.</span><span class="na">addMarker</span><span class="o">(</span><span class="s">&#34;network-parse-complete&#34;</span><span class="o">);</span>
+                    <span class="c1">// Write to cache if applicable.
+</span><span class="c1"></span>                    <span class="c1">// TODO: Only update cache metadata instead of entire record for 304s.
+</span><span class="c1"></span>                    <span class="k">if</span> <span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">shouldCache</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">response</span><span class="o">.</span><span class="na">cacheEntry</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">mCache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getCacheKey</span><span class="o">(),</span> <span class="n">response</span><span class="o">.</span><span class="na">cacheEntry</span><span class="o">);</span>
+                        <span class="n">request</span><span class="o">.</span><span class="na">addMarker</span><span class="o">(</span><span class="s">&#34;network-cache-written&#34;</span><span class="o">);</span>
+                    <span class="o">}</span>
+                    <span class="c1">// Post the response back.
+</span><span class="c1"></span>                    <span class="n">request</span><span class="o">.</span><span class="na">markDelivered</span><span class="o">();</span>
+                    <span class="c1">// mDelivery通过executor和handler将结果发出，由Looper线程处理，通常是主线程
+</span><span class="c1"></span>                    <span class="n">mDelivery</span><span class="o">.</span><span class="na">postResponse</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">);</span>
+</code></pre></div><ul>
+<li>CacheDispatcher.java核心代码如下
+与NetworkDispatcher的实现类似，但CacheDispatcher需要对缓存数据进行判断，是否存在、是否过期、是否需要刷新等。根据判断结果决定是否需要将请求加入网络队列交给NetworkDispatcher处理</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">                <span class="c1">// Get a request from the cache triage queue, blocking until
+</span><span class="c1"></span>                <span class="c1">// at least one is available.
+</span><span class="c1"></span>                <span class="kd">final</span> <span class="n">Request</span><span class="o">&lt;?&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">mCacheQueue</span><span class="o">.</span><span class="na">take</span><span class="o">();</span>
+                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// ...
+</span><span class="c1"></span>                <span class="c1">// Attempt to retrieve this item from cache.
+</span><span class="c1"></span>                <span class="n">Cache</span><span class="o">.</span><span class="na">Entry</span> <span class="n">entry</span> <span class="o">=</span> <span class="n">mCache</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getCacheKey</span><span class="o">());</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">entry</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">request</span><span class="o">.</span><span class="na">addMarker</span><span class="o">(</span><span class="s">&#34;cache-miss&#34;</span><span class="o">);</span>
+                    <span class="c1">// Cache miss; send off to the network dispatcher.
+</span><span class="c1"></span>                    <span class="n">mNetworkQueue</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="c1">// If it is completely expired, just send it to the network.
+</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">isExpired</span><span class="o">())</span> <span class="o">{</span>
+                    <span class="n">request</span><span class="o">.</span><span class="na">addMarker</span><span class="o">(</span><span class="s">&#34;cache-hit-expired&#34;</span><span class="o">);</span>
+                    <span class="n">request</span><span class="o">.</span><span class="na">setCacheEntry</span><span class="o">(</span><span class="n">entry</span><span class="o">);</span>
+                    <span class="n">mNetworkQueue</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+                    <span class="k">continue</span><span class="o">;</span>
+                <span class="o">}</span>
+                <span class="c1">// We have a cache hit; parse its data for delivery back to the request.
+</span><span class="c1"></span>                <span class="n">request</span><span class="o">.</span><span class="na">addMarker</span><span class="o">(</span><span class="s">&#34;cache-hit&#34;</span><span class="o">);</span>
+                <span class="n">Response</span><span class="o">&lt;?&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">parseNetworkResponse</span><span class="o">(</span>
+                        <span class="k">new</span> <span class="n">NetworkResponse</span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">data</span><span class="o">,</span> <span class="n">entry</span><span class="o">.</span><span class="na">responseHeaders</span><span class="o">));</span>
+                <span class="n">request</span><span class="o">.</span><span class="na">addMarker</span><span class="o">(</span><span class="s">&#34;cache-hit-parsed&#34;</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(!</span><span class="n">entry</span><span class="o">.</span><span class="na">refreshNeeded</span><span class="o">())</span> <span class="o">{</span>
+                    <span class="c1">// Completely unexpired cache hit. Just deliver the response.
+</span><span class="c1"></span>                    <span class="n">mDelivery</span><span class="o">.</span><span class="na">postResponse</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                    <span class="c1">// Soft-expired cache hit. We can deliver the cached response,
+</span><span class="c1"></span>                    <span class="c1">// but we need to also send the request to the network for
+</span><span class="c1"></span>                    <span class="c1">// refreshing.
+</span><span class="c1"></span>                    <span class="c1">// ...
+</span><span class="c1"></span>                    <span class="c1">// ...
+</span><span class="c1"></span>                    <span class="n">mDelivery</span><span class="o">.</span><span class="na">postResponse</span><span class="o">(</span><span class="n">request</span><span class="o">,</span> <span class="n">response</span><span class="o">,</span> <span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
+                        <span class="nd">@Override</span>
+                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+                            <span class="k">try</span> <span class="o">{</span>
+                                <span class="n">mNetworkQueue</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">request</span><span class="o">);</span>
+                            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                                <span class="c1">// Not much we can do about this.
+</span><span class="c1"></span>                            <span class="o">}</span>
+                        <span class="o">}</span>
+                    <span class="o">});</span>
+                <span class="o">}</span>
+</code></pre></div><h3 id="嗯还没写完">嗯，还没写完</h3>
 
         
           <div class="blog-tags">
@@ -513,7 +501,7 @@
 
           &nbsp;&bull;&nbsp;&copy;
           
-            2019
+            2020
           
 
           
@@ -523,7 +511,7 @@
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="http://gohugo.io">Hugo v0.66.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>

