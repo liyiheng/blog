@@ -12,13 +12,13 @@
     
     
     <item>
-      <title>Actix-web中间件、handler间传递数据</title>
-      <link>https://liyiheng.github.io/blog/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/</link>
+      <title>Actix-web 中间件、handler 间传递数据</title>
+      <link>https://liyiheng.github.io/blog/2019/04/actix-web-%E4%B8%AD%E9%97%B4%E4%BB%B6handler-%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/</link>
       <pubDate>Sun, 28 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://liyiheng.github.io/blog/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/</guid>
-      <description>&lt;p&gt;背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。&lt;!-- raw HTML omitted --&gt;
-例如: Handler中使用&lt;code&gt;Auth&lt;/code&gt;中间件从token中解出的&lt;code&gt;user_id&lt;/code&gt;。&lt;/p&gt;</description>
+      <guid>https://liyiheng.github.io/blog/2019/04/actix-web-%E4%B8%AD%E9%97%B4%E4%BB%B6handler-%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/</guid>
+      <description>&lt;p&gt;背景：中间件 A 产生的数据，需在后续的其他中间件、Handler 中用到。&lt;!-- raw HTML omitted --&gt;
+例如：Handler 中使用 &lt;code&gt;Auth&lt;/code&gt; 中间件从 token 中解出的 &lt;code&gt;user_id&lt;/code&gt;。&lt;/p&gt;</description>
     </item>
     
     <item>

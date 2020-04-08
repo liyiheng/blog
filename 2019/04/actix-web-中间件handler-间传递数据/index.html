@@ -7,15 +7,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>Actix-web中间件、handler间传递数据 - (≧▽≦)</title>
-  <meta property="og:title" content="Actix-web中间件、handler间传递数据" />
-  <meta name="twitter:title" content="Actix-web中间件、handler间传递数据" />
-  <meta name="description" content="背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。
-例如: Handler中使用Auth中间件从token中解出的user_id。">
-  <meta property="og:description" content="背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。
-例如: Handler中使用Auth中间件从token中解出的user_id。">
-  <meta name="twitter:description" content="背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。
-例如: Handler中使用Auth中间件从token中解出的user_id。">
+  <title>Actix-web 中间件、handler 间传递数据 - (≧▽≦)</title>
+  <meta property="og:title" content="Actix-web 中间件、handler 间传递数据" />
+  <meta name="twitter:title" content="Actix-web 中间件、handler 间传递数据" />
+  <meta name="description" content="背景：中间件 A 产生的数据，需在后续的其他中间件、Handler 中用到。
+例如：Handler 中使用 Auth 中间件从 token 中解出的 user_id。">
+  <meta property="og:description" content="背景：中间件 A 产生的数据，需在后续的其他中间件、Handler 中用到。
+例如：Handler 中使用 Auth 中间件从 token 中解出的 user_id。">
+  <meta name="twitter:description" content="背景：中间件 A 产生的数据，需在后续的其他中间件、Handler 中用到。
+例如：Handler 中使用 Auth 中间件从 token 中解出的 user_id。">
   <meta name="author" content="liyiheng"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -51,8 +51,8 @@
         "@type": "ListItem",
         "position": 3,
         "item": {
-          "@id": "https:\/\/liyiheng.github.io\/blog\/2019\/04\/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE\/",
-          "name": "Actix web中间件、handler间传递数据"
+          "@id": "https:\/\/liyiheng.github.io\/blog\/2019\/04\/actix-web-%E4%B8%AD%E9%97%B4%E4%BB%B6handler-%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE\/",
+          "name": "Actix web 中间件、handler 间传递数据"
         }
     }]
 }
@@ -63,15 +63,15 @@
   "author": {
     "name" : "liyiheng"
   },
-  "headline": "Actix-web中间件、handler间传递数据",
-  "description" : "背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。例如: Handler中使用Auth中间件从token中解出的user_id。\n",
+  "headline": "Actix-web 中间件、handler 间传递数据",
+  "description" : "背景：中间件 A 产生的数据，需在后续的其他中间件、Handler 中用到。例如：Handler 中使用 Auth 中间件从 token 中解出的 user_id。\n",
   "inLanguage" : "zh-cn",
-  "wordCount":  88 ,
+  "wordCount":  117 ,
   "datePublished" : "2019-04-28T00:00:00",
   "dateModified" : "2019-04-28T00:00:00",
   "image" : "https:\/\/liyiheng.github.io\/blog\/",
   "keywords" : [ "rust" ],
-  "mainEntityOfPage" : "https:\/\/liyiheng.github.io\/blog\/2019\/04\/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE\/",
+  "mainEntityOfPage" : "https:\/\/liyiheng.github.io\/blog\/2019\/04\/actix-web-%E4%B8%AD%E9%97%B4%E4%BB%B6handler-%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE\/",
   "publisher" : {
     "@type": "Organization",
     "name" : "https:\/\/liyiheng.github.io\/blog\/",
@@ -85,22 +85,22 @@
 }
 </script>
 
-<meta property="og:title" content="Actix-web中间件、handler间传递数据" />
-<meta property="og:description" content="背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。
-例如: Handler中使用Auth中间件从token中解出的user_id。">
-<meta property="og:url" content="https://liyiheng.github.io/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/" />
+<meta property="og:title" content="Actix-web 中间件、handler 间传递数据" />
+<meta property="og:description" content="背景：中间件 A 产生的数据，需在后续的其他中间件、Handler 中用到。
+例如：Handler 中使用 Auth 中间件从 token 中解出的 user_id。">
+<meta property="og:url" content="https://liyiheng.github.io/2019/04/actix-web-%E4%B8%AD%E9%97%B4%E4%BB%B6handler-%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="(≧▽≦)" />
-  <meta name="twitter:title" content="Actix-web中间件、handler间传递数据" />
-  <meta name="twitter:description" content="背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。
-例如: Handler中使用Auth中间件从token中解出的user_id。">
+  <meta name="twitter:title" content="Actix-web 中间件、handler 间传递数据" />
+  <meta name="twitter:description" content="背景：中间件 A 产生的数据，需在后续的其他中间件、Handler 中用到。
+例如：Handler 中使用 Auth 中间件从 token 中解出的 user_id。">
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:card" content="summary" />
-  <meta property="og:url" content="https://liyiheng.github.io/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/" />
+  <meta property="og:url" content="https://liyiheng.github.io/2019/04/actix-web-%E4%B8%AD%E9%97%B4%E4%BB%B6handler-%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="(≧▽≦)" />
 
-  <meta name="generator" content="Hugo 0.66.0" />
+  <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -234,7 +234,7 @@
           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
             <div class="post-heading">
               
-                <h1>Actix-web中间件、handler间传递数据</h1>
+                <h1>Actix-web 中间件、handler 间传递数据</h1>
               
               
               
@@ -267,9 +267,9 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>背景：中间件A产生的数据，需在后续的其他中间件、Handler中用到。<!-- raw HTML omitted -->
-例如: Handler中使用<code>Auth</code>中间件从token中解出的<code>user_id</code>。</p>
-<p>在golang的gin框架中很容易实现：</p>
+        <p>背景：中间件 A 产生的数据，需在后续的其他中间件、Handler 中用到。<!-- raw HTML omitted -->
+例如：Handler 中使用 <code>Auth</code> 中间件从 token 中解出的 <code>user_id</code>。</p>
+<p>在 golang 的 gin 框架中很容易实现：</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">Auth</span><span class="p">(</span><span class="nx">ctx</span> <span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">){</span>
 	<span class="c1">// ...
 </span><span class="c1"></span>	<span class="nx">ctx</span><span class="p">.</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;uid&#34;</span><span class="p">,</span> <span class="nx">uid</span><span class="p">)</span>
@@ -280,9 +280,9 @@
 	<span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span>
 </code></pre></div><p>Gin 的中间件与普通 handler 的类型相同，核心都是 <code>gin.Context</code></p>
-<p>Rust的<code>actix-web</code>中没有上下文的概念，其中间件形式为：</p>
+<p>Rust 的 <code>actix-web</code> 中没有上下文的概念，其中间件形式为：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">Middleware</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;</span>: <span class="nb">&#39;static</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">    
+</span><span class="w">
 </span><span class="w">    </span><span class="k">fn</span> <span class="nf">start</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">req</span>: <span class="kp">&amp;</span><span class="nc">HttpRequest</span><span class="o">&lt;</span><span class="n">S</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="n">Started</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">Started</span>::<span class="n">Done</span><span class="p">)</span><span class="w">
 </span><span class="w">    </span><span class="p">}</span><span class="w">
@@ -295,7 +295,7 @@
 </span><span class="w">        </span><span class="n">Finished</span>::<span class="n">Done</span><span class="w">
 </span><span class="w">    </span><span class="p">}</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p>Handler则是：</p>
+</span></code></pre></div><p>Handler 则是：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">index</span><span class="p">(</span><span class="n">req</span>: <span class="kp">&amp;</span><span class="nc">HttpRequest</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Box</span><span class="o">&lt;</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Item</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HttpResponse</span><span class="p">,</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">	</span><span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span><span class="w">
@@ -305,9 +305,9 @@
 <code>HttpRequest::state()</code> 可以进行只读访问，修改需要通过内部可变性实现。
 因此认为此场景不适合用状态实现。</p>
 <h3 id="2-session">2. Session</h3>
-<p><code>SessionStorage</code>中间件提供会话管理解决方案，默认只有Cookie作为会话存储的实现。</p>
+<p><code>SessionStorage</code> 中间件提供会话管理解决方案，默认只有 Cookie 作为会话存储的实现。</p>
 <h3 id="3-extensions">3. Extensions</h3>
-<p>通过文档了解到<code>extensions</code>。<!-- raw HTML omitted -->
+<p>通过文档了解到 <code>extensions</code>。<!-- raw HTML omitted -->
 用法如下：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">impl</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">middleware</span>::<span class="n">Middleware</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Auth</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">    </span><span class="k">fn</span> <span class="nf">start</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">req</span>: <span class="kp">&amp;</span><span class="nc">HttpRequest</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="n">Started</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -321,7 +321,7 @@
 </span><span class="c1"></span><span class="w">	</span><span class="kd">let</span><span class="w"> </span><span class="n">uid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">req</span><span class="p">.</span><span class="n">extensions</span><span class="p">().</span><span class="n">get</span>::<span class="o">&lt;</span><span class="kt">i64</span><span class="o">&gt;</span><span class="p">();</span><span class="w">
 </span><span class="w">	</span><span class="c1">// ...
 </span><span class="c1"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p>Extensions大致实现:</p>
+</span></code></pre></div><p>Extensions 大致实现：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">type</span> <span class="nc">AnyMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">TypeId</span><span class="p">,</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="n">Any</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">BuildHasherDefault</span><span class="o">&lt;</span><span class="n">IdHasher</span><span class="o">&gt;&gt;</span><span class="p">;</span><span class="w">
 </span><span class="w">
 </span><span class="w"></span><span class="cp">#[derive(Default)]</span><span class="w">
@@ -330,9 +330,9 @@
 </span><span class="w">    </span><span class="n">map</span>: <span class="nc">AnyMap</span><span class="p">,</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
 </span></code></pre></div><h3 id="结论">结论</h3>
-<p>目前来看，<code>actix-web</code>的<code>extensions</code>最符合需求，但具体实现不同与go的<code>map[string]interface{}</code>,
-而是<code>Map&lt;TypeId, Box&lt;Any&gt;&gt;</code>，因此无法直接存放相同类型的多个值。传递的值较多、类型有重复时，
-需要创建相应的类型来“打包”。</p>
+<p>目前来看，<code>actix-web</code> 的 <code>extensions</code> 最符合需求，但具体实现不同与 go 的 <code>map[string]interface{}</code>,
+而是 <code>Map&lt;TypeId, Box&lt;Any&gt;&gt;</code> ，因此无法直接存放相同类型的多个值。传递的值较多、类型有重复时，
+需要创建相应的类型来「打包」。</p>
 
         
           <div class="blog-tags">
@@ -396,7 +396,7 @@
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.66.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="http://gohugo.io">Hugo v0.68.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>

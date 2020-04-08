@@ -61,9 +61,9 @@
     "name" : "liyiheng"
   },
   "headline": "6.824 Lab2 总结",
-  "description" : "6.824课程的Lab2是实现Raft，分为2A、2B、2C三部分。 2A实现leader选举与心跳；2B实现日志复制；2C实现持久化。\n",
+  "description" : "6.824 课程的 Lab2 是实现 Raft，分为 2A、2B、2C 三部分。 2A 实现 leader 选举与心跳；2B 实现日志复制；2C 实现持久化。\n",
   "inLanguage" : "zh-cn",
-  "wordCount":  76 ,
+  "wordCount":  204 ,
   "datePublished" : "2020-03-07T11:44:44",
   "dateModified" : "2020-03-07T11:44:44",
   "image" : "https:\/\/liyiheng.github.io\/blog\/",
@@ -95,7 +95,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="(≧▽≦)" />
 
-  <meta name="generator" content="Hugo 0.66.0" />
+  <meta name="generator" content="Hugo 0.68.3" />
   <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -266,14 +266,14 @@
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <article role="main" class="blog-post">
-        <p>6.824课程的Lab2是实现Raft，分为2A、2B、2C三部分。
-2A实现leader选举与心跳；2B实现日志复制；2C实现持久化。</p>
+        <p>6.824 课程的 Lab2 是实现 Raft，分为 2A、2B、2C 三部分。
+2A 实现 leader 选举与心跳；2B 实现日志复制；2C 实现持久化。</p>
 <h1 id="2a">2A</h1>
-<p>2A部分比较简单，当时的实现相当粗暴：
-采用互斥锁的并发范式，Node持有<code>Arc&lt;Mutex&lt;Raft&gt;&gt;</code>。
-Raft线程执行一个无尽的循环，每次循环都睡200ms。
-如果该节点为leader，则给其他节点发送心跳；
-否则检查是否选举超时，若已超时，则从follower成为candidate并发起选举。</p>
+<p>2A 部分比较简单，当时的实现相当粗暴：
+采用互斥锁的并发范式，Node 持有<code>Arc&lt;Mutex&lt;Raft&gt;&gt;</code>。
+Raft 线程执行一个无尽的循环，每次循环都睡 200ms。
+如果该节点为 leader，则给其他节点发送心跳；
+否则检查是否选举超时，若已超时，则从 follower 成为 candidate 并发起选举。</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="sd">/// Create a new raft service.
 </span><span class="sd"></span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new</span><span class="p">(</span><span class="n">raft</span>: <span class="nc">Raft</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Node</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">raft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span>::<span class="n">new</span><span class="p">(</span><span class="n">Mutex</span>::<span class="n">new</span><span class="p">(</span><span class="n">raft</span><span class="p">));</span><span class="w">
@@ -293,15 +293,15 @@ Raft线程执行一个无尽的循环，每次循环都睡200ms。
 </span><span class="w">    </span><span class="p">});</span><span class="w">
 </span><span class="w">    </span><span class="n">Node</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">raft</span><span class="w"> </span><span class="p">}</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p>现在看来，这个实现有2个明显的问题：</p>
+</span></code></pre></div><p>现在看来，这个实现有 2 个明显的问题：</p>
 <ol>
-<li>Raft线程长期出于休眠状态，能做的事有限，不方便后续增加新的逻辑</li>
-<li>发起选举的时机不对：比如，选举超时是410ms，该Node并不会在410ms后发起选举，而是在600ms时发起。
-因为400ms时检查尚未超时，下次检查则是200ms后。这就大大增加了多个节点同时发起选举的概率。</li>
+<li>Raft 线程长期出于休眠状态，能做的事有限，不方便后续增加新的逻辑</li>
+<li>发起选举的时机不对：比如，选举超时是 410ms，该 Node 并不会在 410ms 后发起选举，而是在 600ms 时发起。
+因为 400ms 时检查尚未超时，下次检查则是 200ms 后。这就大大增加了多个节点同时发起选举的概率。</li>
 </ol>
-<p>针对第一个问题，改进方案是用<code>futures_timer</code>中的<code>Interval</code>代替<code>thread::sleep()</code>,
-<code>Interval</code>实现了<code>Stream</code>，后续通过<code>select(event_receiver)</code>(mailbox)，采用Actor模型，可以方便地增加其他逻辑。
-第一个问题解决后，第二个问题则迎刃而解：随机出一个选举超时时间，通过<code>Delay</code>准时将发起选举的事件发到Raft线程的<code>mailbox</code>。</p>
+<p>针对第一个问题，改进方案是用 <code>futures_timer</code> 中的 <code>Interval</code> 代替 <code>thread::sleep()</code>,
+<code>Interval</code> 实现了 <code>Stream</code>，后续通过 <code>select(event_receiver)</code> (mailbox)，采用 Actor 模型，可以方便地增加其他逻辑。
+第一个问题解决后，第二个问题则迎刃而解：随机出一个选举超时时间，通过 <code>Delay</code> 准时将发起选举的事件发到 Raft 线程的 <code>mailbox</code>。</p>
 <p>初步改进：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="n">std</span>::<span class="n">thread</span>::<span class="n">spawn</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">    </span><span class="n">Interval</span>::<span class="n">new</span><span class="p">(</span><span class="n">Duration</span>::<span class="n">from_millis</span><span class="p">(</span><span class="mi">200</span><span class="p">))</span><span class="w">
@@ -322,12 +322,12 @@ Raft线程执行一个无尽的循环，每次循环都睡200ms。
 </span><span class="w">        </span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
 </span><span class="w"></span><span class="p">});</span><span class="w">
 </span></code></pre></div><h1 id="2b">2B</h1>
-<p>2B部分为日志复制，实现的过程中有部分精力用于重构2A。
-2B本身不复杂，但需要注意一些细节：<code>term</code>、<code>prev_log_term</code>、<code>match_index</code>、<code>next_index</code>。
-例如，由于粗心，<code>AppendEntries</code>参数中把<code>term</code>做为<code>prev_log_term</code>传递；
-以及<code>next_index</code>维护逻辑、日志<code>up-to-date</code>的判断条件等。
-总之，精力浪费在了寻找各种小细节导致的bug和重构，不过过程中思路愈加清晰。</p>
-<p>2B部分完成后的Raft线程除了发送心跳外，可以接收其他事件并进行相应的逻辑，大致如下：</p>
+<p>2B 部分为日志复制，实现的过程中有部分精力用于重构 2A。
+2B 本身不复杂，但需要注意一些细节：<code>term</code>、<code>prev_log_term</code>、<code>match_index</code>、<code>next_index</code>。
+例如，由于粗心，<code>AppendEntries</code> 参数中把 <code>term</code> 做为 <code>prev_log_term</code> 传递；
+以及 <code>next_index</code> 维护逻辑、日志 <code>up-to-date</code> 的判断条件等。
+总之，精力浪费在了寻找各种小细节导致的 bug 和重构，不过过程中思路愈加清晰。</p>
+<p>2B 部分完成后的 Raft 线程除了发送心跳外，可以接收其他事件并进行相应的逻辑，大致如下：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">fn</span> <span class="nf">start_raft_thread</span><span class="p">(</span><span class="n">raft</span>: <span class="nc">Arc</span><span class="o">&lt;</span><span class="n">Mutex</span><span class="o">&lt;</span><span class="n">Raft</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">UnboundedSender</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">event_tx</span><span class="p">,</span><span class="w"> </span><span class="n">event_rx</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">futures</span>::<span class="n">sync</span>::<span class="n">mpsc</span>::<span class="n">unbounded</span><span class="p">();</span><span class="w">
 </span><span class="w">    </span><span class="n">raft</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap</span><span class="p">().</span><span class="n">event_ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">event_tx</span><span class="p">.</span><span class="n">clone</span><span class="p">());</span><span class="w">
@@ -350,15 +350,15 @@ Raft线程执行一个无尽的循环，每次循环都睡200ms。
 </span><span class="w">    </span><span class="p">});</span><span class="w">
 </span><span class="w">    </span><span class="n">event_tx</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p><code>Node</code>结构体则持有<code>Sender</code>, 由于个别场景直接用锁执行<code>Raft</code>方法非常方便，
-没有完全去除<code>Arc&lt;Mutex&lt;Raft&gt;&gt;</code>:</p>
+</span></code></pre></div><p><code>Node</code> 结构体则持有 <code>Sender</code>, 由于个别场景直接用锁执行 <code>Raft</code> 方法非常方便，
+没有完全去除 <code>Arc&lt;Mutex&lt;Raft&gt;&gt;</code>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="cp">#[derive(Clone)]</span><span class="w">
 </span><span class="w"></span><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">Node</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">    </span><span class="n">sender</span>: <span class="nc">UnboundedSender</span><span class="o">&lt;</span><span class="n">Event</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
 </span><span class="w">    </span><span class="n">raft</span>: <span class="nc">Arc</span><span class="o">&lt;</span><span class="n">Mutex</span><span class="o">&lt;</span><span class="n">Raft</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p>目前来看，<code>Node</code>可以通过<code>sender</code>给<code>Raft</code>发送事件，但很多时候需要拿到事件的处理结果，
-于是在<code>Event</code>上做文章：</p>
+</span></code></pre></div><p>目前来看，<code>Node</code> 可以通过 <code>sender</code> 给 <code>Raft</code> 发送事件，但很多时候需要拿到事件的处理结果，
+于是在 <code>Event</code> 上做文章：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">enum</span> <span class="nc">Event</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span><span class="w">    </span><span class="n">RequestVote</span><span class="p">(</span><span class="n">RequestVoteArgs</span><span class="p">,</span><span class="w"> </span><span class="n">oneshot</span>::<span class="n">Sender</span><span class="o">&lt;</span><span class="n">Reply</span><span class="o">&gt;</span><span class="p">),</span><span class="w">
 </span><span class="w">    </span><span class="n">AppendEntries</span><span class="p">(</span><span class="n">AppendEntriesArgs</span><span class="p">,</span><span class="w"> </span><span class="n">oneshot</span>::<span class="n">Sender</span><span class="o">&lt;</span><span class="n">Reply</span><span class="o">&gt;</span><span class="p">),</span><span class="w">
@@ -371,9 +371,9 @@ Raft线程执行一个无尽的循环，每次循环都睡200ms。
 </span><span class="w">    </span><span class="n">RequestVote</span><span class="p">(</span><span class="n">RequestVoteReply</span><span class="p">),</span><span class="w">
 </span><span class="w">    </span><span class="n">AppendEntries</span><span class="p">(</span><span class="n">AppendEntriesReply</span><span class="p">),</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p><code>Event</code>可以同时携带参数和用于发送处理结果的<code>Sender</code>。
-如果需要某事件的处理结果，则创建新的<code>channel</code>，将参数和<code>sender</code>一并发给<code>Raft</code>，
-而<code>Node</code>则将<code>receiver</code>作为一个<code>RpcFuture</code>返回给调用者，<code>Raft</code>处理完后，用<code>send</code>发送处理结果。
+</span></code></pre></div><p><code>Event</code> 可以同时携带参数和用于发送处理结果的 <code>Sender</code>。
+如果需要某事件的处理结果，则创建新的 <code>channel</code>，将参数和 <code>sender</code> 一并发给 <code>Raft</code>，
+而 <code>Node</code> 则将 <code>receiver</code> 作为一个 <code>RpcFuture</code> 返回给调用者，<code>Raft</code> 处理完后，用 <code>send</code> 发送处理结果。
 例如：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">tx</span><span class="p">,</span><span class="w"> </span><span class="n">rx</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">oneshot</span>::<span class="n">channel</span><span class="p">();</span><span class="w">
 </span><span class="w"></span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="w">
@@ -388,18 +388,18 @@ Raft线程执行一个无尽的循环，每次循环都睡200ms。
 </span><span class="w">    </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">RpcError</span>::<span class="n">Timeout</span><span class="p">),</span><span class="w">
 </span><span class="w"></span><span class="p">}))</span><span class="w">
 </span></code></pre></div><h1 id="2c">2C</h1>
-<p>接下来实现持久化部分。本以为，2C最简单，
-只要在论文中所说的<code>persistent state</code>发生变化后及时调用<code>persist</code>即可。
+<p>接下来实现持久化部分。本以为，2C 最简单，
+只要在论文中所说的 <code>persistent state</code> 发生变化后及时调用 <code>persist</code> 即可。
 然而完成后发现多个用例不通过。</p>
-<p>第一个原因是，目前的实现存在一个bug：没有判断事件的时效性。
-用例模拟了网络不稳定，RPC调用有快有慢、以及特定概率地超时等各种场景。
-节点收到的事件可能不是本个<code>term</code>的，或者节点角色已发生变化，此时应丢弃改事件。</p>
-<p>第二个原因是没有实现<code>kill</code>方法。该方法用于模拟节点崩溃的场景，
-测试用例使某节点崩溃方式是调用其<code>kill</code>方法。此方法没有实现，
+<p>第一个原因是，目前的实现存在一个 bug：没有判断事件的时效性。
+用例模拟了网络不稳定，RPC 调用有快有慢、以及特定概率地超时等各种场景。
+节点收到的事件可能不是本个 <code>term</code> 的，或者节点角色已发生变化，此时应丢弃改事件。</p>
+<p>第二个原因是没有实现 <code>kill</code> 方法。该方法用于模拟节点崩溃的场景，
+测试用例使某节点崩溃方式是调用其 <code>kill</code> 方法。此方法没有实现，
 会导致本该崩溃的节点仍在运行，干扰正常流程。</p>
-<p>第一个问题的解决比较简单，增加判断即可，第二个问题需要通知Raft线程退出。
-在循环中跳出比较简单，<code>break</code>即可，而Raft线程的逻辑在<code>Interval</code>中，
-似乎是无穷的。经查阅文档发现<code>take_while</code>，完美解决：</p>
+<p>第一个问题的解决比较简单，增加判断即可，第二个问题需要通知 Raft 线程退出。
+在循环中跳出比较简单，<code>break</code> 即可，而 Raft 线程的逻辑在 <code>Interval</code> 中，
+似乎是无穷的。经查阅文档发现 <code>take_while</code>，完美解决：</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="n">Interval</span>::<span class="n">new</span><span class="p">(</span><span class="n">INTERVAL_PERIOD</span><span class="p">)</span><span class="w">
 </span><span class="w">    </span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="nb">None</span><span class="p">)</span><span class="w">
 </span><span class="w">    </span><span class="p">.</span><span class="n">map_err</span><span class="p">(</span><span class="o">|</span><span class="n">_</span><span class="o">|</span><span class="w"> </span><span class="p">())</span><span class="w">
@@ -424,12 +424,12 @@ Raft线程执行一个无尽的循环，每次循环都睡200ms。
 </span><span class="w">    </span><span class="p">.</span><span class="n">wait</span><span class="p">()</span><span class="w">
 </span><span class="w">    </span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">
 </span></code></pre></div><p>到这里，事情并未结束。仍有个别用例失败。经过观察发现，
-<code>unreliable</code>的情况下，RPC是非常的unreliable, 超时概率非常高，
-这就导致leader选举频繁失败，通常数次才能成功选举，
-而刚选举成功的leader极有可能连续多次往某个节点发送心跳失败，该节点重新发起选举。</p>
-<p>目前的解决方案是增加心跳的频率，比如原来的200ms一次，到现在的50ms一次,
+<code>unreliable</code> 的情况下，RPC 是非常的 unreliable, 超时概率非常高，
+这就导致 leader 选举频繁失败，通常数次才能成功选举，
+而刚选举成功的 leader 极有可能连续多次往某个节点发送心跳失败，该节点重新发起选举。</p>
+<p>目前的解决方案是增加心跳的频率，比如原来的 200ms 一次，到现在的 50ms 一次，
 心跳成功率不够，用次数弥补。
-加大选举超时时长，允许一定次数的心跳丢失。不过这种方式会使RPC次数增多，影响效率。</p>
+加大选举超时时长，允许一定次数的心跳丢失。不过这种方式会使 RPC 次数增多，影响效率。</p>
 
         
           <div class="blog-tags">
@@ -448,7 +448,7 @@ Raft线程执行一个无尽的循环，每次循环都睡200ms。
         <ul class="pager blog-pager">
           
             <li class="previous">
-              <a href="https://liyiheng.github.io/blog/2019/04/actix-web%E4%B8%AD%E9%97%B4%E4%BB%B6handler%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/" data-toggle="tooltip" data-placement="top" title="Actix-web中间件、handler间传递数据">&larr; 前一篇</a>
+              <a href="https://liyiheng.github.io/blog/2019/04/actix-web-%E4%B8%AD%E9%97%B4%E4%BB%B6handler-%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/" data-toggle="tooltip" data-placement="top" title="Actix-web 中间件、handler 间传递数据">&larr; 前一篇</a>
             </li>
           
           
@@ -489,7 +489,7 @@ Raft线程执行一个无尽的循环，每次循环都睡200ms。
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.66.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="http://gohugo.io">Hugo v0.68.3</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
