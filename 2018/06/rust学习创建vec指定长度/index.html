@@ -62,7 +62,7 @@ println!(&#34;{}&#34;, v[2]);// index out of bounds
   "headline": "[Rust学习]创建Vec指定长度",
   "description" : "golang中可创建指定长度的切片，Rust中的Vec只能在创建时指定容量。\nletv: Vec\u0026lt;i32\u0026gt;=Vec::with_capacity(3);println!(\u0026#34;{}\u0026#34;,v[2]);\/\/ index out of bounds ",
   "inLanguage" : "zh-cn",
-  "wordCount":  67 ,
+  "wordCount":  70 ,
   "datePublished" : "2018-06-27T00:00:00",
   "dateModified" : "2018-06-27T00:00:00",
   "image" : "https:\/\/liyiheng.github.io\/blog\/",
@@ -266,7 +266,7 @@ println!(&#34;{}&#34;, v[2]);// index out of bounds
         <p>golang中可创建指定长度的切片，Rust中的Vec只能在创建时指定容量。</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="n">v</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span>::<span class="n">with_capacity</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span><span class="w">
 </span><span class="w"></span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;{}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span><span class="c1">// index out of bounds
-</span></code></pre></div><h2 id="set_len方法"><code>set_len()</code>方法</h2>
+</span></code></pre></div><h3 id="unsafe-的-set_len">Unsafe 的 <code>set_len()</code></h3>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span>::<span class="n">new</span><span class="p">();</span><span class="w">
 </span><span class="w"></span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">set_len</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">
 </span><span class="w"></span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;v:{}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span><span class="c1">// SIGSEGV, 段错误
@@ -276,14 +276,14 @@ println!(&#34;{}&#34;, v[2]);// index out of bounds
 </span><span class="sd"></span><span class="w">    </span><span class="sd">/// This will explicitly set the size of the vector, without actually
 </span><span class="sd"></span><span class="w">    </span><span class="sd">/// modifying its buffers, so it is up to the caller to ensure that the
 </span><span class="sd"></span><span class="w">    </span><span class="sd">/// vector is actually the specified size.
-</span></code></pre></div><h2 id="所以">所以</h2>
+</span></code></pre></div><p>因此实用 <code>set_len</code> 需要确保容量</p>
 <div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span>: <span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span>::<span class="n">with_capacity</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span><span class="w">
 </span><span class="w"> </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">set_len</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">
 </span><span class="w"> </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;v:{}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span><span class="w">  </span><span class="c1">// v:0
-</span></code></pre></div><h2 id="unfase有风险">Unfase有风险</h2>
-<p>不用<code>set_len</code>方法的话可以用<code>from_elem</code>创建：</p>
-<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="c1">// let v = vec![0;10];
-</span><span class="c1"></span><span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span>::<span class="n">vec</span>::<span class="n">from_elem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span><span class="w">
+</span></code></pre></div><h3 id="通过-vec-宏创建">通过 <code>vec!</code> 宏创建</h3>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="o">!</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="mi">10</span><span class="p">];</span><span class="w">
+</span></code></pre></div><h3 id="通过-stdvecfrom_elem-创建">通过 <code>std::vec::from_elem</code> 创建</h3>
+<div class="highlight"><pre class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span>::<span class="n">vec</span>::<span class="n">from_elem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span><span class="w">
 </span></code></pre></div>
 
         
