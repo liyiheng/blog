@@ -5,10 +5,6 @@
     <link>https://liyiheng.github.io/blog/archives/</link>
     <description>Recent content in Archives on (≧▽≦)</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    
-	<atom:link href="https://liyiheng.github.io/blog/archives/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>zh-cn</language><atom:link href="https://liyiheng.github.io/blog/archives/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

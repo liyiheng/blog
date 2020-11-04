@@ -8,17 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>[译]在go可执行文件中嵌入数据 - (≧▽≦)</title>
-  <meta property="og:title" content="[译]在go可执行文件中嵌入数据" />
-  <meta name="twitter:title" content="[译]在go可执行文件中嵌入数据" />
   <meta name="description" content="
-原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
-
-假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
-  <meta property="og:description" content="
-原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
-
-假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
-  <meta name="twitter:description" content="
 原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
 
 假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
@@ -96,26 +86,20 @@
 原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
 
 假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
-<meta property="og:url" content="https://liyiheng.github.io/2017/09/%E8%AF%91%E5%9C%A8go%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E4%B8%AD%E5%B5%8C%E5%85%A5%E6%95%B0%E6%8D%AE/" />
+<meta property="og:url" content="https://liyiheng.github.io/blog/2017/09/%E8%AF%91%E5%9C%A8go%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E4%B8%AD%E5%B5%8C%E5%85%A5%E6%95%B0%E6%8D%AE/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="(≧▽≦)" />
+
   <meta name="twitter:title" content="[译]在go可执行文件中嵌入数据" />
   <meta name="twitter:description" content="
 原文地址 https://scene-si.org/2017/08/22/embedding-data-in-go-executables/
 
 假如你已经关注了我一段时间，应该知道我正在开发Pendulum编辑器作为每天至少编码一小时的#100DaysOfCode挑战。Pendulum是一个非常适合编辑简单文本和markdown文件的基于web的编辑器。">
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:card" content="summary" />
-  <meta property="og:url" content="https://liyiheng.github.io/2017/09/%E8%AF%91%E5%9C%A8go%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E4%B8%AD%E5%B5%8C%E5%85%A5%E6%95%B0%E6%8D%AE/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="(≧▽≦)" />
-
-  <meta name="generator" content="Hugo 0.69.0" />
-  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <meta name="generator" content="Hugo 0.77.0" />
+  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/syntax.css" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
@@ -252,12 +236,14 @@
                 <span class="post-meta">
   
   
-  <i class="fas fa-calendar"></i>&nbsp;发表于 September 8, 2017
+  <i class="fas fa-calendar"></i>&nbsp;
   
   
   
   
-    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+    
   
   
 </span>
@@ -396,7 +382,7 @@ Feel free to <a href="black@scene-si.org">send me an email</a> if you want to bo
           
           
             <li class="next">
-              <a href="https://liyiheng.github.io/blog/2017/11/golang%E5%B0%8F%E5%B7%A5%E5%85%B7%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-toggle="tooltip" data-placement="top" title="[golang小工具]静态文件服务器">后一篇 &rarr;</a>
+              <a href="https://liyiheng.github.io/blog/2017/11/golang-%E5%B0%8F%E5%B7%A5%E5%85%B7%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-toggle="tooltip" data-placement="top" title="[golang 小工具]静态文件服务器">后一篇 &rarr;</a>
             </li>
           
         </ul>
@@ -409,7 +395,8 @@ Feel free to <a href="black@scene-si.org">send me an email</a> if you want to bo
   </div>
 </div>
 
-    <footer>
+      
+<footer>
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -436,22 +423,19 @@ Feel free to <a href="black@scene-si.org">send me an email</a> if you want to bo
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.69.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="https://gohugo.io">Hugo v0.77.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
     </div>
   </div>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
-<script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
+
+<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
 
 
 
@@ -460,6 +444,8 @@ Feel free to <a href="black@scene-si.org">send me an email</a> if you want to bo
 
 
 
+
+    
   </body>
 </html>
 

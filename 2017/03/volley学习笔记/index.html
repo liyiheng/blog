@@ -8,13 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>Volley学习笔记 - (≧▽≦)</title>
-  <meta property="og:title" content="Volley学习笔记" />
-  <meta name="twitter:title" content="Volley学习笔记" />
   <meta name="description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
-主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
-  <meta property="og:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
-主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
-  <meta name="twitter:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
 主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
   <meta name="author" content="liyiheng"/><script type="application/ld+json">
 {
@@ -64,7 +58,7 @@
     "name" : "liyiheng"
   },
   "headline": "Volley学习笔记",
-  "description" : "虽然更倾向于retrofit \x2b okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧\n主要是分析Volley的部分实现，不再涉及具体使用和二次封装\n",
+  "description" : "虽然更倾向于retrofit \u002b okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧\n主要是分析Volley的部分实现，不再涉及具体使用和二次封装\n",
   "inLanguage" : "zh-cn",
   "wordCount":  598 ,
   "datePublished" : "2017-03-01T00:00:00",
@@ -88,24 +82,18 @@
 <meta property="og:title" content="Volley学习笔记" />
 <meta property="og:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
 主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
-<meta property="og:url" content="https://liyiheng.github.io/2017/03/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" />
+<meta property="og:url" content="https://liyiheng.github.io/blog/2017/03/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="(≧▽≦)" />
+
   <meta name="twitter:title" content="Volley学习笔记" />
   <meta name="twitter:description" content="虽然更倾向于retrofit &#43; okhttp，但目前的项目中还在用Volley，从学习的角度扒一扒Volley的源码吧
 主要是分析Volley的部分实现，不再涉及具体使用和二次封装">
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:card" content="summary" />
-  <meta property="og:url" content="https://liyiheng.github.io/2017/03/volley%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="(≧▽≦)" />
-
-  <meta name="generator" content="Hugo 0.69.0" />
-  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <meta name="generator" content="Hugo 0.77.0" />
+  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/syntax.css" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
@@ -242,12 +230,14 @@
                 <span class="post-meta">
   
   
-  <i class="fas fa-calendar"></i>&nbsp;发表于 March 1, 2017
+  <i class="fas fa-calendar"></i>&nbsp;
   
   
   
   
-    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+    
   
   
 </span>
@@ -294,7 +284,7 @@
 <span class="o">}</span>
 </code></pre></div><ul>
 <li>1.创建缓存目录</li>
-<li>2.生成内容为<code>包名/版本号</code>的UA，默认为&quot;volley/0&rdquo;</li>
+<li>2.生成内容为<code>包名/版本号</code>的UA，默认为&quot;volley/0&quot;</li>
 <li>3.如果未指定stack，在api9以上的设备上使用基于HttpURLConnection的stack，更旧是设备上则是用HttpClient实现的stack。传入的HttpStack为<code>接口类型</code>，因此可以使用自己的HttpStack实现（如okhttp）。</li>
 <li>4.创建BasicNetwork对象和DiskBasedCache对象</li>
 <li>5.通过4中的对象构造一个RequestQueue，并调用start()方法后将其返回</li>
@@ -484,7 +474,8 @@
   </div>
 </div>
 
-    <footer>
+      
+<footer>
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -511,22 +502,19 @@
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.69.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="https://gohugo.io">Hugo v0.77.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
     </div>
   </div>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
-<script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
+
+<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
 
 
 
@@ -535,6 +523,8 @@
 
 
 
+
+    
   </body>
 </html>
 

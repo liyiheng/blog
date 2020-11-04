@@ -8,8 +8,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <title>从“unsafe”看数据结构对齐 - (≧▽≦)</title>
-  <meta property="og:title" content="从“unsafe”看数据结构对齐" />
-  <meta name="twitter:title" content="从“unsafe”看数据结构对齐" />
   <meta name="description" content="数据结构对齐是什么？维基百科对其有如下定义：
 
 数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。
@@ -17,19 +15,6 @@
 一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
 内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。
 ">
-  <meta property="og:description" content="数据结构对齐是什么？维基百科对其有如下定义：
-
-数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。
-内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。
-一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
-内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。
-">
-  <meta name="twitter:description" content="数据结构对齐是什么？维基百科对其有如下定义：
-
-数据结构对齐是代码编译后在内存的布局与使用方式。包括三方面内容：数据对齐、数据结构填充（padding）与包入（packing）。
-内存地址a被称为n字节对齐，当a是n的倍数（n应是2的幂）。
-一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
-内存指针 …&lt;/!--&gt;&lt;/!--&gt;&lt;/!--&gt;">
   <meta name="author" content="liyiheng"/><script type="application/ld+json">
 {
     "@context": "http://schema.org",
@@ -107,9 +92,10 @@
 一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
 内存指针是对齐的，如果它所指的数据是对齐的。指向聚合数据（aggregate data，如struct或数组）是对齐的，当且仅当它的每个组成数据是对齐的。
 ">
-<meta property="og:url" content="https://liyiheng.github.io/2019/02/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90/" />
+<meta property="og:url" content="https://liyiheng.github.io/blog/2019/02/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="(≧▽≦)" />
+
   <meta name="twitter:title" content="从“unsafe”看数据结构对齐" />
   <meta name="twitter:description" content="数据结构对齐是什么？维基百科对其有如下定义：
 
@@ -118,17 +104,10 @@
 一次内存访问被称为对齐的，当被访问的数据长度为n 字节且该数据地址为n字节对齐。如果内存未对齐，称作misaligned。显然，字节访问总是对齐的。
 内存指针 …&lt;/!--&gt;&lt;/!--&gt;&lt;/!--&gt;">
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:card" content="summary" />
-  <meta property="og:url" content="https://liyiheng.github.io/2019/02/%E4%BB%8Eunsafe%E7%9C%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E9%BD%90/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="(≧▽≦)" />
-
-  <meta name="generator" content="Hugo 0.69.0" />
-  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <meta name="generator" content="Hugo 0.77.0" />
+  <link rel="alternate" href="https://liyiheng.github.io/blog/index.xml" type="application/rss+xml" title="(≧▽≦)"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/syntax.css" /><link rel="stylesheet" href="https://liyiheng.github.io/blog/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
 
@@ -265,12 +244,14 @@
                 <span class="post-meta">
   
   
-  <i class="fas fa-calendar"></i>&nbsp;发表于 February 23, 2019
+  <i class="fas fa-calendar"></i>&nbsp;
   
   
   
   
-    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+    
+      &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;liyiheng
+    
   
   
 </span>
@@ -401,7 +382,8 @@
   </div>
 </div>
 
-    <footer>
+      
+<footer>
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -428,22 +410,19 @@
         </p>
         
         <p class="credits theme-by text-muted">
-          由 <a href="http://gohugo.io">Hugo v0.69.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
+          由 <a href="https://gohugo.io">Hugo v0.77.0</a> 强力驱动 &nbsp;&bull;&nbsp; 主题 <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a> 移植自 <a href="https://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a>
           
         </p>
       </div>
     </div>
   </div>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
-<script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
+
+<script src="https://liyiheng.github.io/blog/js/main.js"></script><script> renderMathInElement(document.body); </script><script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script><script src="https://liyiheng.github.io/blog/js/load-photoswipe.js"></script>
 
 
 
@@ -452,6 +431,8 @@
 
 
 
+
+    
   </body>
 </html>
 

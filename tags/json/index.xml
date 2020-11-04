@@ -6,11 +6,7 @@
     <description>Recent content in JSON on (≧▽≦)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 22 Jun 2017 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://liyiheng.github.io/blog/tags/json/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 22 Jun 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://liyiheng.github.io/blog/tags/json/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>[译]Golang中JSON和结构体的组合使用</title>
       <link>https://liyiheng.github.io/blog/2017/06/%E8%AF%91golang%E4%B8%ADjson%E5%92%8C%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E7%BB%84%E5%90%88%E4%BD%BF%E7%94%A8/</link>

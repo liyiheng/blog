@@ -6,11 +6,7 @@
     <description>Recent content in rust on (≧▽≦)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 28 Apr 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://liyiheng.github.io/blog/categories/rust/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 28 Apr 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://liyiheng.github.io/blog/categories/rust/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Actix-web 中间件、handler 间传递数据</title>
       <link>https://liyiheng.github.io/blog/2019/04/actix-web-%E4%B8%AD%E9%97%B4%E4%BB%B6handler-%E9%97%B4%E4%BC%A0%E9%80%92%E6%95%B0%E6%8D%AE/</link>

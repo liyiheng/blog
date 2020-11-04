@@ -6,11 +6,7 @@
     <description>Recent content in Protocol Buffer on (≧▽≦)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 28 Mar 2017 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://liyiheng.github.io/blog/tags/protocol-buffer/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 28 Mar 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://liyiheng.github.io/blog/tags/protocol-buffer/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hello protobuf !</title>
       <link>https://liyiheng.github.io/blog/2017/03/hello-protobuf/</link>
