@@ -4,26 +4,31 @@
   
   <url>
     <loc>https://liyiheng.github.io/blog/</loc>
-    <lastmod>2020-11-04T19:24:44+08:00</lastmod>
+    <lastmod>2020-12-06T16:34:24+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://liyiheng.github.io/blog/post/</loc>
-    <lastmod>2020-11-04T19:24:44+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://liyiheng.github.io/blog/2020/11/raii-rust-%E6%A8%A1%E6%8B%9F-golang-%E4%B8%AD%E7%9A%84-defer/</loc>
-    <lastmod>2020-11-04T19:24:44+08:00</lastmod>
+    <lastmod>2020-12-06T16:34:24+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://liyiheng.github.io/blog/tags/rust/</loc>
-    <lastmod>2020-11-04T19:24:44+08:00</lastmod>
+    <lastmod>2020-12-06T16:34:24+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://liyiheng.github.io/blog/tags/</loc>
+    <lastmod>2020-12-06T16:34:24+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://liyiheng.github.io/blog/2020/12/%E5%AE%9E%E7%8E%B0%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E4%B8%BA-o1-%E7%9A%84-lfu/</loc>
+    <lastmod>2020-12-06T16:34:24+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://liyiheng.github.io/blog/2020/11/raii-rust-%E6%A8%A1%E6%8B%9F-golang-%E4%B8%AD%E7%9A%84-defer/</loc>
     <lastmod>2020-11-04T19:24:44+08:00</lastmod>
   </url>
   

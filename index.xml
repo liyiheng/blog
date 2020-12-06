@@ -6,7 +6,18 @@
     <description>Recent content on (≧▽≦)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 04 Nov 2020 19:24:44 +0800</lastBuildDate><atom:link href="https://liyiheng.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 06 Dec 2020 16:34:24 +0800</lastBuildDate><atom:link href="https://liyiheng.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>实现时间复杂度为 O(1) 的 LFU</title>
+      <link>https://liyiheng.github.io/blog/2020/12/%E5%AE%9E%E7%8E%B0%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E4%B8%BA-o1-%E7%9A%84-lfu/</link>
+      <pubDate>Sun, 06 Dec 2020 16:34:24 +0800</pubDate>
+      
+      <guid>https://liyiheng.github.io/blog/2020/12/%E5%AE%9E%E7%8E%B0%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E4%B8%BA-o1-%E7%9A%84-lfu/</guid>
+      <description>&lt;p&gt;阅读了 &lt;a href=&#34;https://github.com/papers-we-love/papers-we-love&#34;&gt;Papers-We-Love&lt;/a&gt; caching 中的 LFU， 尝试动手实现。&lt;/p&gt;
+&lt;p&gt;An O(1) algorithm for implementing the LFU cache eviction scheme by Prof. Ketan Shah, Anirban Mitra, Dhruv Matani&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/papers-we-love/papers-we-love/blob/master/caching/a-constant-algorithm-for-implementing-the-lfu-cache-eviction-scheme.pdf&#34;&gt;Paper&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>RAII: Rust 模拟 golang 中的 defer</title>
       <link>https://liyiheng.github.io/blog/2020/11/raii-rust-%E6%A8%A1%E6%8B%9F-golang-%E4%B8%AD%E7%9A%84-defer/</link>
